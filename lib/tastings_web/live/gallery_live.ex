@@ -20,10 +20,10 @@ defmodule TastingsWeb.GalleryLive do
   def render(assigns) do
     ~L"""
     <section class="phx-hero">
-    <%= if length(@cards) > 1 do %>
-      <button phx-click="prev" >Prev</button>
-      <button phx-click="next" >Next</button>
-    <% end %>
+      <%= if length(@cards) > 1 do %>
+        <button phx-click="prev" >Prev</button>
+        <button phx-click="next" >Next</button>
+      <% end %>
       <%= live_component @socket, CardLive, card: Enum.at(@cards, @view) %>
     </section>
     """
