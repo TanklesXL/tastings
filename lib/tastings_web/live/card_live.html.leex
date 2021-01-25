@@ -1,0 +1,39 @@
+<section class="phx-hero" style="display:inline-block;">
+  <h1><%= @card.name %></h1>
+  <h2>Description</h2>
+  <p><%= @card.desc %></p>
+  <div>
+    <img src="<%= @card.img %>" class="thumbnail" />
+    <div>
+      <style>
+        h3 {
+          text-align: left;
+        }
+
+        p {
+          font-size: 16px;
+          text-align: left;
+        }
+
+        .thumbnail {
+          height: 450px;
+          float: right;
+          padding-left: 75px;
+        }
+      </style>
+
+      <h2>Notes</h2>
+      <h3>Nose:</h3>
+      <p><%= @card.notes.nose %></p>
+      <h3>Palate:</h3>
+      <p><%= @card.notes.palate %></p>
+      <h3>Finish:</h3>
+      <p><%= @card.notes.finish %></p>
+
+      <%= if @card.notes.overall !== ""  do %>
+      <h3>Overall:</h3>
+      <p><%= @card.notes.overall %></p>
+      <% end %>
+    </div>
+  </div>
+</section>

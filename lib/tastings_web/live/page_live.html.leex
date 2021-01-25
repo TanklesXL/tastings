@@ -1,0 +1,19 @@
+<%= if @cards  !== [] do %>
+<button phx-click="clear" style="float:right;">Clear</button>
+<% end %>
+
+<%= if @cards  === [] do %>
+<section class="phx-hero">
+    <div>
+        <h1><%= gettext "Welcome to %{name}!", name: "Tastings" %></h1>
+        <form phx-submit="add">
+            <input type="text" name="urls" placeholder="Comma separated list of URLs" />
+            <button type="submit" phx-disable-with="Scraping...">Scrape</button>
+        </form>
+    </div>
+</section>
+<% end %>
+
+<%= if @cards  !== [] do %>
+<%= live_render @socket, GalleryLive, id: "gallery", session: %{"cards" => @cards} %>
+<% end %>
