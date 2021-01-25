@@ -44,7 +44,8 @@ defmodule Tastings.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:master_of_malt, path: "/home/robert.attard/elixir/master_of_malt"}
+      {:master_of_malt, path: "/home/robert.attard/elixir/master_of_malt"},
+      {:credo, "~> 1.5.4", only: [:dev, :test], runtime: false}
     ]
   end
 
