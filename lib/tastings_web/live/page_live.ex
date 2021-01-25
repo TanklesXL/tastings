@@ -25,6 +25,7 @@ defmodule TastingsWeb.PageLive do
 
   def handle_event("clear", _session, socket), do: {:noreply, assign(socket, :cards, [])}
 
+  @impl true
   def render(assigns) do
     ~L"""
     <%= if Enum.empty?(@cards) do %>

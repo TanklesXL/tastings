@@ -2,6 +2,7 @@ defmodule TastingsWeb.GalleryLive do
   use TastingsWeb, :live_view
   alias TastingsWeb.CardLive
 
+  @impl true
   def mount(_, session, socket) do
     {:ok,
      socket
@@ -9,6 +10,7 @@ defmodule TastingsWeb.GalleryLive do
      |> assign(:cards, session["cards"])}
   end
 
+  @impl true
   def handle_event("prev", _args, socket) do
     {:noreply, update(socket, :view, &rem(&1 - 1, length(socket.assigns.cards)))}
   end
@@ -17,6 +19,7 @@ defmodule TastingsWeb.GalleryLive do
     {:noreply, update(socket, :view, &rem(&1 + 1, length(socket.assigns.cards)))}
   end
 
+  @impl true
   def render(assigns) do
     ~L"""
     <section class="phx-hero">
