@@ -9,17 +9,23 @@ defmodule TastingsWeb.PageLive do
 
   @impl true
   def handle_event("add", %{"urls" => urls}, socket) do
-    {:noreply,
-     case String.trim(urls) do
-       "" ->
-         put_flash(socket, :error, "must submit at least one url")
+    {cards, errs} =
+      case String.trim(urls) do
+        "" ->
+          {[], ["must submit at least one url"]}
 
-       urls ->
-         urls
-         |> String.split(",")
-         |> Enum.map(&extract_url_tag/1)
-         |> MasterOfMalt.scrape_many(true)
-         |> Enum.reduce(socket, &assign_card/2)
+        urls ->
+          urls
+          |> String.split(",")
+          |> Enum.map(&extract_url_tag/1)
+          |> MasterOfMalt.scrape_many(true)
+          |> Enum.reduce({[], []}, &extract_card/2)
+      end
+
+    {:noreply,
+     case Enum.empty?(errs) do
+       false -> put_flash(socket, :error, Enum.join(errs, ", "))
+       true -> assign(socket, :cards, cards)
      end}
   end
 
@@ -29,29 +35,22 @@ defmodule TastingsWeb.PageLive do
   def render(assigns) do
     ~L"""
     <%= if Enum.empty?(@cards) do %>
-      <section class="phx-hero">
-        <h1><%= gettext "Welcome to %{name}!", name: "Tastings" %></h1>
-        <form phx-submit="add">
-            <textarea name="urls" placeholder="Comma separated list of URLs" style="resize:vertical;"></textarea>
-            <button type="submit" phx-disable-with="Scraping...">Scrape</button>
-        </form>
-      </section>
+    <section class="phx-hero">
+      <h1><%= gettext "Welcome to %{name}!", name: "Tastings" %></h1>
+      <form phx-submit="add">
+        <textarea name="urls" placeholder="Comma separated list of URLs" style="resize:vertical;"></textarea>
+        <button type="submit" phx-disable-with="Scraping...">Scrape</button>
+      </form>
+    </section>
     <% else %>
-      <button phx-click="clear" style="float:right;">Clear</button>
-      <%= live_render @socket, GalleryLive, id: "gallery", session: %{"cards" => @cards} %>
+    <%= live_render @socket, GalleryLive, id: "gallery", session: %{"cards" => @cards} %>
+    <button phx-click="clear" style="float:left;" >Clear</button>
     <% end %>
     """
   end
 
   defp extract_url_tag(url), do: String.replace_prefix(url, Site.endpoint(), "")
 
-  defp assign_card({:ok, card}, socket) do
-    socket
-    |> assign(:cards, socket.assigns.cards ++ [card])
-  end
-
-  defp assign_card({:error, err}, socket) do
-    socket
-    |> put_flash(:error, err)
-  end
+  defp extract_card({:ok, card}, {cards, errs}), do: {cards ++ [card], errs}
+  defp extract_card({:error, err}, {cards, errs}), do: {cards, errs ++ [err]}
 end

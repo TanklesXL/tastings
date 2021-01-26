@@ -11,21 +11,20 @@ defmodule TastingsWeb.GalleryLive do
   end
 
   @impl true
-  def handle_event("prev", _args, socket) do
-    {:noreply, update(socket, :view, &rem(&1 - 1, length(socket.assigns.cards)))}
+  def handle_event(opt, _args, socket) do
+    {:noreply, update(socket, :view, new_index(opt, socket))}
   end
 
-  def handle_event("next", _args, socket) do
-    {:noreply, update(socket, :view, &rem(&1 + 1, length(socket.assigns.cards)))}
-  end
+  defp new_index("prev", socket), do: &rem(&1 - 1, length(socket.assigns.cards))
+  defp new_index("next", socket), do: &rem(&1 + 1, length(socket.assigns.cards))
 
   @impl true
   def render(assigns) do
     ~L"""
-    <section class="phx-hero">
+    <section class=phx-hero>
       <%= if length(@cards) > 1 do %>
-        <button phx-click="prev" >Prev</button>
-        <button phx-click="next" >Next</button>
+      <button phx-click="prev" >Prev</button>
+      <button phx-click="next" >Next</button>
       <% end %>
       <%= live_component @socket, CardLive, card: Enum.at(@cards, @view) %>
     </section>

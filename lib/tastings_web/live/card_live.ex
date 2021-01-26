@@ -4,28 +4,35 @@ defmodule TastingsWeb.CardLive do
   @impl true
   def render(assigns) do
     ~L"""
-    <section class="phx-hero" style="display:inline-block;">
+    <div>
       <h1><%= @card.name %></h1>
-      <h2>Description</h2>
-      <p><%= @card.desc %></p>
       <div>
-        <img src="<%= @card.img %>" class="thumbnail" style="height:450px; float:right; padding-left:75px;" />
+        <h2 style="text-decoration:underline;">Description</h2>
+        <p><%= @card.desc %></p>
+        <img src="<%= @card.img %>" style="width:15em;float:right;margin-left:0.75em;"/>
         <div>
-          <h2>Notes</h2>
-          <h3 style="text-align:left;">Nose:</h3>
-          <p style="font-size:16px; text-align:left;"><%= @card.notes.nose %></p>
-          <h3 style=" text-align:left;">Palate:</h3>
-          <p style="font-size:16px; text-align:left;"><%= @card.notes.palate %></p>
-          <h3 style="text-align:left;">Finish:</h3>
-          <p style="font-size:16px; text-align:left;"><%= @card.notes.finish %></p>
-
+          <style>
+          h3 {
+            text-align: left;
+            text-decoration: underline;
+          }
+          p {
+            text-align: left;
+          }
+          </style>
+          <h3>Nose:</h3>
+          <p><%= @card.notes.nose %></p>
+          <h3>Palate:</h3>
+          <p><%= @card.notes.palate %></p>
+          <h3>Finish:</h3>
+          <p><%= @card.notes.finish %></p>
           <%= if @card.notes.overall !== ""  do %>
-          <h3 style="text-align:left;">Overall:</h3>
-          <p style="font-size:16px; text-align:left;"><%= @card.notes.overall %></p>
+          <h3>Overall:</h3>
+          <p><%= @card.notes.overall %></p>
           <% end %>
         </div>
       </div>
-    </section>
+    </div>
     """
   end
 end
