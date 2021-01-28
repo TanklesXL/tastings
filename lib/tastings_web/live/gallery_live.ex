@@ -1,13 +1,12 @@
 defmodule TastingsWeb.GalleryLive do
-  use TastingsWeb, :live_view
+  use TastingsWeb, :live_component
   alias TastingsWeb.CardLive
 
   @impl true
-  def mount(_, session, socket) do
+  def mount(socket) do
     {:ok,
      socket
-     |> assign(:view, 0)
-     |> assign(:cards, session["cards"])}
+     |> assign(:view, 0)}
   end
 
   @impl true
@@ -21,13 +20,13 @@ defmodule TastingsWeb.GalleryLive do
   @impl true
   def render(assigns) do
     ~L"""
-    <section class=phx-hero>
+    <div>
       <%= if length(@cards) > 1 do %>
-      <button phx-click="prev" >Prev</button>
-      <button phx-click="next" >Next</button>
+      <button phx-click="prev" phx-target="<%= @myself %>">Prev</button>
+      <button phx-click="next" phx-target="<%= @myself %>">Next</button>
       <% end %>
       <%= live_component @socket, CardLive, card: Enum.at(@cards, @view) %>
-    </section>
+    </div>
     """
   end
 end

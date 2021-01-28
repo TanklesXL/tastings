@@ -1,0 +1,31 @@
+.tastings {
+    overflow: auto;
+}
+
+.url-submission-box {
+    resize: vertical;
+}
+
+.clear-btn {
+    float: left;
+}
+
+.description-title {
+    text-decoration: underline;
+}
+
+.whisky-thumbnail {
+    max-width: 20em;
+    max-height: 30em;
+    float: right;
+    margin-left: 0.75em;
+}
+
+.notes-title {
+    text-align: left;
+    text-decoration: underline;
+}
+
+.notes-text {
+    text-align: left;
+}

@@ -17,16 +17,19 @@ defmodule TastingsWeb.PageLive do
         urls ->
           urls
           |> String.split(",")
-          |> Enum.map(&extract_url_tag/1)
+          |> Stream.map(&String.trim/1)
+          |> Stream.map(&extract_url_tag/1)
           |> MasterOfMalt.scrape_many(true)
           |> Enum.reduce({[], []}, &extract_card/2)
       end
 
-    {:noreply,
-     case Enum.empty?(errs) do
-       false -> put_flash(socket, :error, Enum.join(errs, ", "))
-       true -> assign(socket, :cards, cards)
-     end}
+    {
+      :noreply,
+      case Enum.empty?(errs) do
+        false -> put_flash(socket, :error, Enum.join(errs, ", "))
+        true -> assign(socket, :cards, cards)
+      end
+    }
   end
 
   def handle_event("clear", _session, socket), do: {:noreply, assign(socket, :cards, [])}
@@ -34,18 +37,18 @@ defmodule TastingsWeb.PageLive do
   @impl true
   def render(assigns) do
     ~L"""
-    <%= if Enum.empty?(@cards) do %>
-    <section class="phx-hero">
+    <section class="phx-hero tastings">
+      <%= if Enum.empty?(@cards) do %>
       <h1><%= gettext "Welcome to %{name}!", name: "Tastings" %></h1>
       <form phx-submit="add">
-        <textarea name="urls" placeholder="Comma separated list of URLs" style="resize:vertical;"></textarea>
+        <textarea name="urls" placeholder="Comma separated list of URLs" class="url-submission-box"></textarea>
         <button type="submit" phx-disable-with="Scraping...">Scrape</button>
       </form>
+      <% else %>
+      <%= live_component @socket, GalleryLive, id: "gallery", cards: @cards %>
+      <button phx-click="clear" class="clear-btn" >Clear</button>
+      <% end %>
     </section>
-    <% else %>
-    <%= live_render @socket, GalleryLive, id: "gallery", session: %{"cards" => @cards} %>
-    <button phx-click="clear" style="float:left;" >Clear</button>
-    <% end %>
     """
   end
 
