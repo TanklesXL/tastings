@@ -28,6 +28,9 @@ defmodule TastingsWeb.CardLive do
           <%= @card.notes.overall %>
         </p>
         <% end %>
+        <p style="float:right;">
+          Brand: <%= @card.brand %>
+        </p>
       </div>
     </div>
     """
