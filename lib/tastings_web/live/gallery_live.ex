@@ -18,8 +18,8 @@ defmodule TastingsWeb.GalleryLive do
     ~L"""
     <div>
       <%= if length(@cards) > 1 do %>
-      <button phx-click="prev" phx-target="<%= @myself %>">&laquo; Prev</button>
-      <button phx-click="next" phx-target="<%= @myself %>">Next &raquo;</button>
+      <button phx-click="prev" phx-target="<%= @myself %>" class="nav-button">&laquo; Prev</button>
+      <button phx-click="next" phx-target="<%= @myself %>" class="nav-button">Next &raquo;</button>
       <% end %>
       <%= live_component @socket, CardLive, card: Enum.at(@cards, @view) %>
     </div>

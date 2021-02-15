@@ -2,12 +2,18 @@
     overflow: auto;
 }
 
-.url-submission-box {
-    resize: vertical;
-}
-
 .clear-btn {
     float: left;
+    background-color: transparent;
+    color: red;
+    border: 1px solid red;
+    transition-duration: 0.25s;
+}
+
+.clear-btn:hover {
+    background-color: red;
+    color: white;
+    border: 1px solid red;
 }
 
 .description-title {
@@ -28,4 +34,55 @@
 
 .notes-text {
     text-align: left;
+}
+
+.title {
+    float: right;
+}
+
+.title-image {
+    height: 6em;
+}
+
+.add-row-button,
+.add-row-button:focus {
+    color: blue;
+    background-color: transparent;
+    border: 0 solid transparent;
+    float: left;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 5px;
+    transition-duration: 0.25s;
+}
+
+.add-row-button:hover {
+    background-color: transparent;
+    color: red;
+}
+
+.url-submit-button,
+.url-submit-button:focus {
+    background-color: #4CAF50;
+    width: 100%;
+    transition-duration: 0.2s;
+}
+
+.url-submit-button:hover {
+    background-color: #4CAF50;
+    box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.24);
+}
+
+.nav-button,
+.nav-button:focus,
+.nav-button:disabled {
+    background-color: transparent;
+    color: blue;
+    transition-duration: 0.25s;
+}
+
+.nav-button:hover {
+    background-color: transparent;
+    color: blue;
+    border: 1px solid blue;
 }
