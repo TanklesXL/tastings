@@ -52,7 +52,7 @@ defmodule TastingsWeb.PageLive do
         </form>
       </div>
       <% else %>
-      <%= live_component @socket, GalleryLive, id: "gallery", cards: @cards %>
+      <%= live_render @socket, GalleryLive, id: "gallery", session: %{"cards" => @cards} %>
       <button phx-click="clear" class="clear-btn">Clear</button>
       <% end %>
     </section>
