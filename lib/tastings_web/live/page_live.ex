@@ -18,7 +18,7 @@ defmodule TastingsWeb.PageLive do
 
   @impl true
   def handle_event("add_row", _session, socket) do
-    {:noreply, assign(socket, :num_inputs, socket.assigns.num_inputs + 1)}
+    {:noreply, update(socket, :num_inputs, &(&1 + 1))}
   end
 
   def handle_event("submit", session, socket) do
@@ -58,6 +58,9 @@ defmodule TastingsWeb.PageLive do
     </section>
     """
   end
+
+  @impl true
+  def handle_info({:cards, cards}, socket), do: {:noreply, assign(socket, :cards, cards)}
 
   defp fetch_urls_from_session(session, socket) do
     @starting_input_count..socket.assigns.num_inputs
