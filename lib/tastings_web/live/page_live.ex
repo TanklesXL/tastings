@@ -76,7 +76,8 @@ defmodule TastingsWeb.PageLive do
     urls
     |> Stream.map(&String.trim/1)
     |> Stream.map(&extract_url_tag/1)
-    |> MasterOfMalt.scrape_many(true)
+    |> Task.async_stream(&MasterOfMalt.scrape_single/1)
+    |> Stream.map(fn {:ok, res} -> res end)
     |> Enum.reduce({[], []}, &collect_scraped_cards/2)
     |> case do
       {cards, []} -> {:ok, cards}
