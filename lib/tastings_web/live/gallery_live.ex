@@ -4,14 +4,14 @@ defmodule TastingsWeb.GalleryLive do
 
   @impl true
   def mount(_args, %{"cards" => [current | next] = cards}, socket) do
-    {
-      :ok,
-      socket
-      |> assign(:count, length(cards))
-      |> assign(:prev, [])
-      |> assign(:current, current)
-      |> assign(:next, next)
-    }
+    assigns = [
+      count: length(cards),
+      prev: [],
+      current: current,
+      next: next
+    ]
+
+    {:ok, assign(socket, assigns)}
   end
 
   @impl true

@@ -1,19 +1,21 @@
 defmodule TastingsWeb.PageLive do
   use TastingsWeb, :live_view
   alias MasterOfMalt
-  alias MasterOfMalt.Boundary.Site
+  alias MasterOfMalt.Boundary.Site, as: MoM
   alias TastingsWeb.GalleryLive
+  import Phoenix.HTML.Form
 
   @starting_input_count 1
 
+  @initial_state [
+    cards: [],
+    num_inputs: @starting_input_count,
+    disable_scrape: true
+  ]
+
   @impl true
   def mount(_args, _session, socket) do
-    {
-      :ok,
-      socket
-      |> assign(:cards, [])
-      |> assign(:num_inputs, @starting_input_count)
-    }
+    {:ok, assign(socket, @initial_state)}
   end
 
   @impl true
@@ -34,7 +36,7 @@ defmodule TastingsWeb.PageLive do
     end
   end
 
-  def handle_event("clear", _session, socket), do: {:noreply, assign(socket, :cards, [])}
+  def handle_event("clear", _session, socket), do: {:noreply, assign(socket, @initial_state)}
 
   @impl true
   def render(assigns) do
@@ -44,12 +46,13 @@ defmodule TastingsWeb.PageLive do
       <div>
       <h2>Select URLs to scrape</h2>
         <button type="button" phx-click="add_row" class="add-row-button">Add row</button>
-        <form phx-submit="submit">
+        <%=  form_for :urls, "#", [phx_submit: "submit"], fn f -> %>
           <%= for i <- 1..@num_inputs do %>
-          <input type="text" name="url_<%= i %>" placeholder="URL"/>
-          <% end%>
-          <button type="submit" phx-disable-with="Scraping..." class="url-submit-button">Scrape</button>
-        </form>
+          <%= text_input f, :"url_#{i}", [placeholder: "URL"] %>
+          <%= error_tag f, :"url_#{i}" %>
+          <% end %>
+          <%= submit  "Scrape", [phx_disable_with: "Scraping...", class: "url-submit-button", disabled: @disable_scrape] %>
+        <% end %>
       </div>
       <% else %>
       <%= live_render @socket, GalleryLive, id: "gallery", session: %{"cards" => @cards} %>
@@ -64,7 +67,7 @@ defmodule TastingsWeb.PageLive do
 
   defp fetch_urls_from_session(session, socket) do
     @starting_input_count..socket.assigns.num_inputs
-    |> Stream.map(&Map.get(session, "url_#{&1}", ""))
+    |> Stream.map(&Map.get(session["urls"], "url_#{&1}", ""))
     |> Enum.reject(&(&1 === ""))
     |> case do
       [] -> {:error, "must submit at least one URL"}
@@ -85,7 +88,7 @@ defmodule TastingsWeb.PageLive do
     end
   end
 
-  defp extract_url_tag(url), do: String.replace_prefix(url, Site.endpoint(), "")
+  defp extract_url_tag(url), do: String.replace_prefix(url, MoM.endpoint(), "")
 
   defp collect_scraped_cards({:ok, card}, {cards, errs}), do: {cards ++ [card], errs}
   defp collect_scraped_cards({:error, err}, {cards, errs}), do: {cards, errs ++ [err]}
