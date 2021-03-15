@@ -4,11 +4,11 @@ defmodule TastingsWeb.PageLiveTest do
   import Phoenix.LiveViewTest
 
   defp input_field(id) do
-    "<input type=\"text\" name=\"url_#{id}\" placeholder=\"URL\"/>"
+    "<input id=\"urls_url_#{id}\" name=\"urls[url_#{id}]\" placeholder=\"URL\" type=\"text\"/>"
   end
 
   defp scrape_btn do
-    "<button type=\"submit\" phx-disable-with=\"Scraping...\" class=\"url-submit-button\">Scrape</button>"
+    "<button class=\"url-submit-button\" phx-disable-with=\"Scraping...\" type=\"submit\">Scrape</button>"
   end
 
   test "disconnected and connected render", %{conn: conn} do

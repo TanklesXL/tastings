@@ -9,8 +9,7 @@ defmodule TastingsWeb.PageLive do
 
   @initial_state [
     cards: [],
-    num_inputs: @starting_input_count,
-    disable_scrape: true
+    num_inputs: @starting_input_count
   ]
 
   @impl true
@@ -51,7 +50,7 @@ defmodule TastingsWeb.PageLive do
           <%= text_input f, :"url_#{i}", [placeholder: "URL"] %>
           <%= error_tag f, :"url_#{i}" %>
           <% end %>
-          <%= submit  "Scrape", [phx_disable_with: "Scraping...", class: "url-submit-button", disabled: @disable_scrape] %>
+          <%= submit  "Scrape", [phx_disable_with: "Scraping...", class: "url-submit-button"] %>
         <% end %>
       </div>
       <% else %>
@@ -66,8 +65,10 @@ defmodule TastingsWeb.PageLive do
   def handle_info({:cards, cards}, socket), do: {:noreply, assign(socket, :cards, cards)}
 
   defp fetch_urls_from_session(session, socket) do
+    urls = Map.get(session, "urls", %{})
+
     @starting_input_count..socket.assigns.num_inputs
-    |> Stream.map(&Map.get(session["urls"], "url_#{&1}", ""))
+    |> Stream.map(&Map.get(urls, "url_#{&1}", ""))
     |> Enum.reject(&(&1 === ""))
     |> case do
       [] -> {:error, "must submit at least one URL"}
