@@ -1,9 +1,8 @@
 defmodule TastingsWeb.PageLive do
   use TastingsWeb, :live_view
-  alias MasterOfMalt
-  alias MasterOfMalt.Boundary.Site, as: MoM
   alias TastingsWeb.GalleryLive
   import Phoenix.HTML.Form
+  alias Tastings.Sources.MasterOfMalt
 
   @starting_input_count 1
 
@@ -89,7 +88,7 @@ defmodule TastingsWeb.PageLive do
     end
   end
 
-  defp extract_url_tag(url), do: String.replace_prefix(url, MoM.endpoint(), "")
+  defp extract_url_tag(url), do: String.replace_prefix(url, MasterOfMalt.endpoint(), "")
 
   defp collect_scraped_cards({:ok, card}, {cards, errs}), do: {cards ++ [card], errs}
   defp collect_scraped_cards({:error, err}, {cards, errs}), do: {cards, errs ++ [err]}

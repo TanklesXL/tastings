@@ -1,4 +1,4 @@
-defmodule Tastings.Source do
+defmodule Tastings.Sources do
   @type notes :: %{
           nose: String.t(),
           palate: String.t(),
