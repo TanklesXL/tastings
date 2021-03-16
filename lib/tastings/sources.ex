@@ -1,4 +1,8 @@
 defmodule Tastings.Sources do
+  @moduledoc """
+  Behaviour for web scraping sources.
+  """
+
   @type notes :: %{
           nose: String.t(),
           palate: String.t(),
@@ -19,6 +23,10 @@ defmodule Tastings.Sources do
 end
 
 defmodule Tastings.Sources.MasterOfMalt do
+  @moduledoc """
+  Callback adapters for masterofmalt.com
+  """
+
   @behaviour Tastings.Sources
   defdelegate scrape_single(url), to: MasterOfMalt
   defdelegate endpoint(), to: MasterOfMalt.Boundary.Site

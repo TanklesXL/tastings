@@ -1,4 +1,7 @@
 defmodule TastingsWeb.GalleryLive do
+  @moduledoc """
+  The live view to render a gallery of tastings cards.
+  """
   use TastingsWeb, :live_view
   alias TastingsWeb.CardLive
 

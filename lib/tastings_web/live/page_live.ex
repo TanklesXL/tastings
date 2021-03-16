@@ -1,4 +1,9 @@
 defmodule TastingsWeb.PageLive do
+  @moduledoc """
+  The main application page for tastings.
+  Contains form for URL submission and wraps the resulting card gallery.
+  """
+
   use TastingsWeb, :live_view
   alias TastingsWeb.GalleryLive
   import Phoenix.HTML.Form
@@ -78,27 +83,33 @@ defmodule TastingsWeb.PageLive do
     end
   end
 
+  @type source_pair :: {String.t(), Tastings.Sources}
+
+  @spec source_available(String.t()) :: nil | source_pair
   defp source_available(url) do
     Enum.find(@sources, nil, fn {endpoint, _source} -> String.starts_with?(url, endpoint) end)
   end
 
+  @spec accumulate_sources(binary, [source_pair]) :: {:halt, String.t()} | {:cont, [source_pair]}
   defp accumulate_sources(url, acc) do
     case source_available(url) do
-      {endpoint, source} -> {:cont, [{String.trim_leading(url, endpoint), source} | acc]}
+      {endpoint, source} -> {:cont, acc ++ [{String.trim_leading(url, endpoint), source}]}
       _ -> {:halt, {:error, "no supported source for #{url}"}}
     end
   end
 
+  @spec get_sources_for_urls([String.t()]) :: {:error, String.t()} | {:ok, [source_pair]}
   defp get_sources_for_urls(urls) do
     urls
     |> Stream.map(&String.trim/1)
     |> Enum.reduce_while([], &accumulate_sources/2)
     |> case do
       {:error, _reason} = err -> err
-      urls_with_sources -> {:ok, Enum.reverse(urls_with_sources)}
+      urls_with_sources -> {:ok, urls_with_sources}
     end
   end
 
+  @spec process_urls([source_pair]) :: {:error, [String.t()]} | {:ok, [Tastings.Sources.card()]}
   defp process_urls(urls_with_sources) do
     urls_with_sources
     |> Task.async_stream(fn {path, source} -> source.scrape_single(path) end)
@@ -110,6 +121,11 @@ defmodule TastingsWeb.PageLive do
     end
   end
 
+  @type card :: Tastings.Sources.card()
+  @type cards_and_errs :: {[card()], [String.t()]}
+
+  @spec collect_scraped_cards({:ok, [card()]} | {:error, String.t()}, cards_and_errs) ::
+          cards_and_errs
   defp collect_scraped_cards({:ok, card}, {cards, errs}), do: {cards ++ [card], errs}
   defp collect_scraped_cards({:error, err}, {cards, errs}), do: {cards, errs ++ [err]}
 end

@@ -1,4 +1,7 @@
 defmodule TastingsWeb.CardLive do
+  @moduledoc """
+  The live component to render a tastings card.
+  """
   use TastingsWeb, :live_component
 
   @impl true
