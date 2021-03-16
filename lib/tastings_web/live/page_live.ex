@@ -2,7 +2,9 @@ defmodule TastingsWeb.PageLive do
   use TastingsWeb, :live_view
   alias TastingsWeb.GalleryLive
   import Phoenix.HTML.Form
-  alias Tastings.Sources.MasterOfMalt
+
+  @sources Application.compile_env!(:tastings, :sources)
+           |> Enum.reduce(%{}, &Map.put(&2, &1.endpoint(), &1))
 
   @starting_input_count 1
 
@@ -23,7 +25,8 @@ defmodule TastingsWeb.PageLive do
 
   def handle_event("submit", session, socket) do
     with {:ok, urls} <- fetch_urls_from_session(session, socket),
-         {:ok, cards} <- process_urls(urls) do
+         {:ok, urls_with_sources} <- get_sources_for_urls(urls),
+         {:ok, cards} <- process_urls(urls_with_sources) do
       {:noreply, assign(socket, :cards, cards)}
     else
       {:error, err} when is_list(err) ->
@@ -75,11 +78,28 @@ defmodule TastingsWeb.PageLive do
     end
   end
 
-  defp process_urls(urls) do
+  defp source_available(url) do
+    Enum.find(@sources, nil, fn {endpoint, _source} -> String.starts_with?(url, endpoint) end)
+  end
+
+  defp get_sources_for_urls(urls) do
     urls
     |> Stream.map(&String.trim/1)
-    |> Stream.map(&extract_url_tag/1)
-    |> Task.async_stream(&MasterOfMalt.scrape_single/1)
+    |> Enum.reduce_while([], fn url, acc ->
+      case source_available(url) do
+        nil -> {:halt, {:error, "no supported source for #{url}"}}
+        {endpoint, source} -> {:cont, [{String.trim_leading(url, endpoint), source} | acc]}
+      end
+    end)
+    |> case do
+      {:error, _reason} = err -> err
+      urls_with_sources -> {:ok, Enum.reverse(urls_with_sources)}
+    end
+  end
+
+  defp process_urls(urls_with_sources) do
+    urls_with_sources
+    |> Task.async_stream(fn {path, source} -> source.scrape_single(path) end)
     |> Stream.map(fn {:ok, res} -> res end)
     |> Enum.reduce({[], []}, &collect_scraped_cards/2)
     |> case do
@@ -87,8 +107,6 @@ defmodule TastingsWeb.PageLive do
       {_cards, errs} -> {:error, errs}
     end
   end
-
-  defp extract_url_tag(url), do: String.replace_prefix(url, MasterOfMalt.endpoint(), "")
 
   defp collect_scraped_cards({:ok, card}, {cards, errs}), do: {cards ++ [card], errs}
   defp collect_scraped_cards({:error, err}, {cards, errs}), do: {cards, errs ++ [err]}

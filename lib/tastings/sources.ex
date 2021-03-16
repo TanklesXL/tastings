@@ -17,3 +17,9 @@ defmodule Tastings.Sources do
   @callback scrape_single(String.t()) :: {:ok, card} | {:error, String.t()}
   @callback endpoint() :: String.t()
 end
+
+defmodule Tastings.Sources.MasterOfMalt do
+  @behaviour Tastings.Sources
+  defdelegate scrape_single(url), to: MasterOfMalt
+  defdelegate endpoint(), to: MasterOfMalt.Boundary.Site
+end
