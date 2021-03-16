@@ -82,15 +82,17 @@ defmodule TastingsWeb.PageLive do
     Enum.find(@sources, nil, fn {endpoint, _source} -> String.starts_with?(url, endpoint) end)
   end
 
+  defp accumulate_sources(url, acc) do
+    case source_available(url) do
+      {endpoint, source} -> {:cont, [{String.trim_leading(url, endpoint), source} | acc]}
+      _ -> {:halt, {:error, "no supported source for #{url}"}}
+    end
+  end
+
   defp get_sources_for_urls(urls) do
     urls
     |> Stream.map(&String.trim/1)
-    |> Enum.reduce_while([], fn url, acc ->
-      case source_available(url) do
-        nil -> {:halt, {:error, "no supported source for #{url}"}}
-        {endpoint, source} -> {:cont, [{String.trim_leading(url, endpoint), source} | acc]}
-      end
-    end)
+    |> Enum.reduce_while([], &accumulate_sources/2)
     |> case do
       {:error, _reason} = err -> err
       urls_with_sources -> {:ok, Enum.reverse(urls_with_sources)}
