@@ -1,0 +1,20 @@
+    <section class="phx-hero tastings">
+        <%= if Enum.empty?(@cards) do %>
+        <div>
+            <h2>Select URLs to scrape</h2>
+            <button type="button" phx-click="add_row" class="add-row-button">Add row</button>
+            <form phx-submit="submit" phx-change="input">
+                <%= for i <- 1..@num_inputs do %>
+                <%= text_input @urls, :"url_#{i}", [placeholder: "URL"] %>
+                <div class="url-error-msg">
+                    <%= error_tag @urls, :"url_#{i}" %>
+                </div>
+                <% end %>
+                <%= submit  "Scrape", [phx_disable_with: "Scraping...", class: "url-submit-button", disabled: @disable_scrape] %>
+            </form>
+        </div>
+        <% else %>
+        <%= live_render @socket, GalleryLive, id: "gallery", session: %{"cards" => @cards} %>
+        <button phx-click="clear" class="clear-btn">Clear</button>
+        <% end %>
+    </section>

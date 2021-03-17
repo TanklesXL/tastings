@@ -7,8 +7,12 @@ defmodule TastingsWeb.PageLiveTest do
     "<input id=\"urls_url_#{id}\" name=\"urls[url_#{id}]\" placeholder=\"URL\" type=\"text\"/>"
   end
 
-  defp scrape_btn do
-    "<button class=\"url-submit-button\" phx-disable-with=\"Scraping...\" type=\"submit\">Scrape</button>"
+  defp scrape_btn(disabled \\ false) do
+    disabled = if disabled, do: " disabled=\"disabled\"", else: ""
+
+    "<button class=\"url-submit-button\" phx-disable-with=\"Scraping...\" type=\"submit\"#{
+      disabled
+    }>Scrape</button>"
   end
 
   test "disconnected and connected render", %{conn: conn} do
@@ -18,7 +22,7 @@ defmodule TastingsWeb.PageLiveTest do
     connected_html = render(page_live)
     assert connected_html =~ "<h2>Select URLs to scrape</h2>"
     assert connected_html =~ input_field(1)
-    assert connected_html =~ scrape_btn()
+    assert connected_html =~ scrape_btn(true)
   end
 
   test "clicking scrape with empty input fields shows an error", %{conn: conn} do
@@ -28,10 +32,24 @@ defmodule TastingsWeb.PageLiveTest do
 
   test "clicking add row button adds a new input field", %{conn: conn} do
     {:ok, page_live, _disconnected_html} = live(conn, "/")
-    view_with_two_inputs = render_click(page_live, :add_row)
-    assert view_with_two_inputs =~ input_field(1)
-    assert view_with_two_inputs =~ input_field(2)
-    refute view_with_two_inputs =~ input_field(3)
+    html = render_click(page_live, :add_row)
+    assert html =~ input_field(1)
+    assert html =~ input_field(2)
+    refute html =~ input_field(3)
+    assert html =~ scrape_btn(true)
+  end
+
+  test "inputing a valid url enables the scrape button", %{conn: conn} do
+    {:ok, page_live, _disconnected_html} = live(conn, "/")
+
+    html =
+      page_live
+      |> form("form", %{"urls[url_1]": ""})
+      |> render_change(%{
+        "urls[url_1]": "https://www.masterofmalt.com/whiskies/ardbeg/ardbeg-10-year-old-whisky/"
+      })
+
+    assert html =~ scrape_btn()
   end
 
   defp assert_rendered_card(html, card) do
@@ -136,17 +154,17 @@ defmodule TastingsWeb.PageLiveTest do
     html = render(page_live)
     assert html =~ "<h2>Select URLs to scrape</h2>"
     assert html =~ input_field(1)
-    assert html =~ scrape_btn()
+    assert html =~ scrape_btn(true)
 
     send(page_live.pid, {:cards, [@ardbeg_card]})
     html = render(page_live)
     refute html =~ "<h2>Select URLs to scrape</h2>"
     refute html =~ input_field(1)
-    refute html =~ scrape_btn()
+    refute html =~ scrape_btn(true)
 
     html = render_click(page_live, :clear)
     assert html =~ "<h2>Select URLs to scrape</h2>"
     assert html =~ input_field(1)
-    assert html =~ scrape_btn()
+    assert html =~ scrape_btn(true)
   end
 end

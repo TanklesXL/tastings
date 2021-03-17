@@ -19,31 +19,31 @@ defmodule TastingsWeb.GalleryLive do
 
   @impl true
   def handle_event("prev", _args, socket) do
-    case socket.assigns.prev do
-      [] ->
-        {:noreply, socket}
+    {:noreply,
+     case socket.assigns.prev do
+       [] ->
+         socket
 
-      [h | t] ->
-        {:noreply,
+       [h | t] ->
          socket
          |> assign(:next, [socket.assigns.current | socket.assigns.next])
          |> assign(:prev, t)
-         |> assign(:current, h)}
-    end
+         |> assign(:current, h)
+     end}
   end
 
   def handle_event("next", _args, socket) do
-    case socket.assigns.next do
-      [] ->
-        {:noreply, socket}
+    {:noreply,
+     case socket.assigns.next do
+       [] ->
+         socket
 
-      [h | t] ->
-        {:noreply,
+       [h | t] ->
          socket
          |> assign(:prev, [socket.assigns.current | socket.assigns.prev])
          |> assign(:next, t)
-         |> assign(:current, h)}
-    end
+         |> assign(:current, h)
+     end}
   end
 
   @impl true

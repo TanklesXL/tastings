@@ -73,6 +73,12 @@
     box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.24);
 }
 
+.url-submit-button[disabled]:hover {
+    background-color: #4CAF50;
+    width: 100%;
+    box-shadow: none;
+}
+
 .nav-button,
 .nav-button:focus,
 .nav-button:active {
@@ -95,4 +101,11 @@
     color: navy;
     transition-duration: 0.25s;
     border: 1px solid navy;
+}
+
+.url-error-msg {
+    float: left;
+    font-size: 0.75em;
+    text-align: left;
+    text-justify: inter-word;
 }

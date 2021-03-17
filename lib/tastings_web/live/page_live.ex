@@ -9,13 +9,16 @@ defmodule TastingsWeb.PageLive do
   import Phoenix.HTML.Form
 
   @sources Application.compile_env!(:tastings, :sources)
-           |> Enum.reduce(%{}, &Map.put(&2, &1.endpoint(), &1))
+           |> Stream.map(&{&1.endpoint(), &1})
+           |> Enum.into(%{})
 
   @starting_input_count 1
 
   @initial_state [
     cards: [],
-    num_inputs: @starting_input_count
+    num_inputs: @starting_input_count,
+    urls: Phoenix.HTML.FormData.to_form(:urls, []),
+    disable_scrape: true
   ]
 
   @impl true
@@ -25,7 +28,12 @@ defmodule TastingsWeb.PageLive do
 
   @impl true
   def handle_event("add_row", _session, socket) do
-    {:noreply, update(socket, :num_inputs, &(&1 + 1))}
+    {
+      :noreply,
+      socket
+      |> update(:num_inputs, &(&1 + 1))
+      |> assign(:disable_scrape, true)
+    }
   end
 
   def handle_event("submit", session, socket) do
@@ -44,32 +52,47 @@ defmodule TastingsWeb.PageLive do
 
   def handle_event("clear", _session, socket), do: {:noreply, assign(socket, @initial_state)}
 
-  @impl true
-  def render(assigns) do
-    ~L"""
-    <section class="phx-hero tastings">
-      <%= if Enum.empty?(@cards) do %>
-      <div>
-      <h2>Select URLs to scrape</h2>
-        <button type="button" phx-click="add_row" class="add-row-button">Add row</button>
-        <%=  form_for :urls, "#", [phx_submit: "submit"], fn f -> %>
-          <%= for i <- 1..@num_inputs do %>
-          <%= text_input f, :"url_#{i}", [placeholder: "URL"] %>
-          <%= error_tag f, :"url_#{i}" %>
-          <% end %>
-          <%= submit  "Scrape", [phx_disable_with: "Scraping...", class: "url-submit-button"] %>
-        <% end %>
-      </div>
-      <% else %>
-      <%= live_render @socket, GalleryLive, id: "gallery", session: %{"cards" => @cards} %>
-      <button phx-click="clear" class="clear-btn">Clear</button>
-      <% end %>
-    </section>
-    """
+  def handle_event("input", session, socket) do
+    url_map_with_atom_keys =
+      session["urls"]
+      |> Stream.map(fn {key, val} -> {String.to_atom(key), val} end)
+      |> Enum.into(%{})
+
+    justify =
+      url_map_with_atom_keys
+      |> Map.keys()
+      |> Enum.reduce(Justify.Dataset.new(url_map_with_atom_keys), &validate_url/2)
+
+    socket =
+      socket
+      |> update(:urls, &(&1 |> Map.put(:data, justify.data)))
+      |> update(:urls, &(&1 |> Map.put(:errors, justify.errors)))
+      |> assign(:disable_scrape, not Enum.empty?(justify.errors))
+
+    {:noreply, socket}
   end
 
   @impl true
   def handle_info({:cards, cards}, socket), do: {:noreply, assign(socket, :cards, cards)}
+
+  defp validate_url(key, acc) do
+    url = acc.data[key]
+
+    case String.length(url) do
+      0 ->
+        Justify.add_error(acc, key, "cannot submit empty field")
+
+      _ ->
+        if source_available?(url),
+          do: acc,
+          else: Justify.add_error(acc, key, "no supported source available")
+    end
+  end
+
+  @spec source_available?(String.t()) :: boolean()
+  defp source_available?(url) do
+    Enum.any?(@sources, fn {endpoint, _source} -> String.starts_with?(url, endpoint) end)
+  end
 
   defp fetch_urls_from_session(session, socket) do
     urls = Map.get(session, "urls", %{})
@@ -85,14 +108,14 @@ defmodule TastingsWeb.PageLive do
 
   @type source_pair :: {String.t(), Tastings.Sources}
 
-  @spec source_available(String.t()) :: nil | source_pair
-  defp source_available(url) do
+  @spec get_source(String.t()) :: nil | source_pair
+  defp get_source(url) do
     Enum.find(@sources, nil, fn {endpoint, _source} -> String.starts_with?(url, endpoint) end)
   end
 
   @spec accumulate_sources(binary, [source_pair]) :: {:halt, String.t()} | {:cont, [source_pair]}
   defp accumulate_sources(url, acc) do
-    case source_available(url) do
+    case get_source(url) do
       {endpoint, source} -> {:cont, acc ++ [{String.trim_leading(url, endpoint), source}]}
       _ -> {:halt, {:error, "no supported source for #{url}"}}
     end
