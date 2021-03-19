@@ -1,19 +1,20 @@
 # Tastings
 
-To start your Phoenix server:
+A simple spirits tasting aide built with [`elixir`](https://elixir-lang.org/) & [`the phoenix framework`](https://www.phoenixframework.org/).
 
-  * Install dependencies with `mix deps.get`
-  * Install Node.js dependencies with `npm install` inside the `assets` directory
-  * Start Phoenix endpoint with `mix phx.server`
+An example version of this app is deployed at https://tastings.gigalixirapp.com
+
+You can test it by inputting this url: https://www.masterofmalt.com/whiskies/ardbeg/ardbeg-10-year-old-whisky/
+
+
+## Currently Supported Sources
+
+- https://www.masterofmalt.com/
+
+## Running locally
+
+To start your Phoenix server:
+- Setup project with `mix setup`
+- Start Phoenix endpoint with `mix phx.server`
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
-
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
-
-## Learn more
-
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix

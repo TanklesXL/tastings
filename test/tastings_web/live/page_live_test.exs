@@ -65,12 +65,12 @@ defmodule TastingsWeb.PageLiveTest do
     card.notes.overall && assert html =~ notes_text.("Overall", card.notes.overall)
   end
 
-  @ardbeg_card %MasterOfMalt.Core.Card{
+  @ardbeg_card %Tastings.Card{
     name: "Ardbeg 10 Year Old",
     img: "https://ardbeg-img.png",
     desc: "Very good peaty whisky!",
     brand: "Ardbeg",
-    notes: %MasterOfMalt.Core.Notes{
+    notes: %Tastings.Notes{
       nose:
         "A ridge of vanilla leads to mountain of peat capped with citrus fruits and circled by clouds of sea spray.",
       palate:
@@ -81,12 +81,12 @@ defmodule TastingsWeb.PageLiveTest do
     }
   }
 
-  @glendronach_card %MasterOfMalt.Core.Card{
+  @glendronach_card %Tastings.Card{
     name: "The GlenDronach 15 Year Old Revival ",
     img: "https://glendro-img.png",
     desc: "Very good sherried whisky!",
     brand: "GlenDronach",
-    notes: %MasterOfMalt.Core.Notes{
+    notes: %Tastings.Notes{
       nose: "Coffee beans, sponge cake drenched in sherry, mint leaf, slightly buttery, sultana.",
       palate:
         "Oily walnut, new leather, blackberry and apple crumble, toasted brown sugar and a touch of liquorice root.",

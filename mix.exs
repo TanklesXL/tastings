@@ -35,7 +35,7 @@ defmodule Tastings.MixProject do
     [
       {:phoenix, "~> 1.5.7"},
       {:phoenix_live_view, "~> 0.15.4"},
-      {:floki, ">= 0.27.0"},
+      {:floki, "~> 0.30.0"},
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_dashboard, "~> 0.4"},
@@ -44,9 +44,9 @@ defmodule Tastings.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:master_of_malt, github: "TanklesXL/master_of_malt", branch: "main"},
       {:credo, "~> 1.5.4", only: [:dev, :test], runtime: false},
-      {:justify, "~> 1.1.0"}
+      {:justify, "~> 1.1.0"},
+      {:httpoison, "~> 1.8"}
     ]
   end
 
