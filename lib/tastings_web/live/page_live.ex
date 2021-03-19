@@ -87,11 +87,11 @@ defmodule TastingsWeb.PageLive do
     end
   end
 
-  @spec starts_with_endpoint(String.t(), Tastings.Sources) :: boolean()
-  defp starts_with_endpoint(url, source), do: String.starts_with?(url, source.endpoint())
+  @spec source_compatible?(String.t(), Tastings.Sources) :: boolean()
+  defp source_compatible?(url, source), do: String.starts_with?(url, source.endpoint())
 
   @spec source_available?(String.t()) :: boolean()
-  defp source_available?(url), do: Enum.any?(@sources, &starts_with_endpoint(url, &1))
+  defp source_available?(url), do: Enum.any?(@sources, &source_compatible?(url, &1))
 
   @type scraper :: (() -> Tastings.Sources.scrape_result())
 
@@ -99,7 +99,7 @@ defmodule TastingsWeb.PageLive do
   defp get_scraper(url) do
     Enum.find_value(
       @sources,
-      &if(starts_with_endpoint(url, &1),
+      &if(source_compatible?(url, &1),
         do: fn -> url |> String.trim_leading(&1.endpoint()) |> &1.scrape_single() end
       )
     )
