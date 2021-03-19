@@ -1,11 +1,16 @@
 # Tastings
 
-A simple spirits tasting aide built with [`elixir`](https://elixir-lang.org/) & [`the phoenix framework`](https://www.phoenixframework.org/).
+A simple spirits tasting aide built with:
+<br/>
+<img src="https://elixir-lang.org/images/logo/logo.png" height="25px"/>
+<img src="https://raw.githubusercontent.com/phoenixframework/phoenix/master/priv/static/phoenix.png" height="25px"/>
+
+
+## Go check it out
 
 An example version of this app is deployed at https://tastings.gigalixirapp.com
 
 You can test it by inputting this url: https://www.masterofmalt.com/whiskies/ardbeg/ardbeg-10-year-old-whisky/
-
 
 ## Currently Supported Sources
 
@@ -14,6 +19,7 @@ You can test it by inputting this url: https://www.masterofmalt.com/whiskies/ard
 ## Running locally
 
 To start your Phoenix server:
+
 - Setup project with `mix setup`
 - Start Phoenix endpoint with `mix phx.server`
 
