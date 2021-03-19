@@ -9,8 +9,6 @@ defmodule TastingsWeb.PageLive do
   import Phoenix.HTML.Form
 
   @sources Application.compile_env!(:tastings, :sources)
-           |> Stream.map(&{&1.endpoint(), &1})
-           |> Enum.into(%{})
 
   @starting_input_count 1
 
@@ -89,9 +87,22 @@ defmodule TastingsWeb.PageLive do
     end
   end
 
+  @spec starts_with_endpoint(String.t(), Tastings.Sources) :: boolean()
+  defp starts_with_endpoint(url, source), do: String.starts_with?(url, source.endpoint())
+
   @spec source_available?(String.t()) :: boolean()
-  defp source_available?(url) do
-    Enum.any?(@sources, fn {endpoint, _source} -> String.starts_with?(url, endpoint) end)
+  defp source_available?(url), do: Enum.any?(@sources, &starts_with_endpoint(url, &1))
+
+  @type scraper :: (() -> Tastings.Sources.scrape_result())
+
+  @spec get_scraper(String.t()) :: nil | scraper
+  defp get_scraper(url) do
+    Enum.find_value(
+      @sources,
+      &if(starts_with_endpoint(url, &1),
+        do: fn -> url |> String.trim_leading(&1.endpoint()) |> &1.scrape_single() end
+      )
+    )
   end
 
   defp fetch_urls_from_session(session, socket) do
@@ -106,23 +117,15 @@ defmodule TastingsWeb.PageLive do
     end
   end
 
-  @type source_pair :: {String.t(), Tastings.Sources}
-  @type card :: Tastings.Sources.card()
-  @type scraper :: (() -> Tastings.Sources.scrape_result())
-
-  @spec get_source(String.t()) :: nil | source_pair
-  defp get_source(url) do
-    Enum.find(@sources, nil, fn {endpoint, _source} -> String.starts_with?(url, endpoint) end)
-  end
-
-  @spec accumulate_sources(binary, [source_pair]) :: {:halt, String.t()} | {:cont, [scraper]}
-  defp accumulate_sources(url, acc) do
-    case get_source(url) do
-      {endpoint, source} ->
-        {:cont, [fn -> url |> String.trim_leading(endpoint) |> source.scrape_single() end | acc]}
-
-      _ ->
+  @spec accumulate_scrapers(binary, [scraper()]) ::
+          {:halt, {:error, String.t()}} | {:cont, [scraper()]}
+  defp accumulate_scrapers(url, acc) do
+    case get_scraper(url) do
+      nil ->
         {:halt, {:error, "no supported source for #{url}"}}
+
+      scraper ->
+        {:cont, [scraper | acc]}
     end
   end
 
@@ -130,12 +133,14 @@ defmodule TastingsWeb.PageLive do
   defp get_scrapers(urls) do
     urls
     |> Stream.map(&String.trim/1)
-    |> Enum.reduce_while([], &accumulate_sources/2)
+    |> Enum.reduce_while([], &accumulate_scrapers/2)
     |> case do
       {:error, _reason} = err -> err
       scrapers -> {:ok, scrapers}
     end
   end
+
+  @type card :: Tastings.Sources.card()
 
   @spec scrape_cards([scraper()]) :: {:error, [String.t()]} | {:ok, [card()]}
   defp scrape_cards(scrapers) do
