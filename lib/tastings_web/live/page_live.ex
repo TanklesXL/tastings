@@ -38,8 +38,8 @@ defmodule TastingsWeb.PageLive do
 
   def handle_event("submit", session, socket) do
     with {:ok, urls} <- fetch_urls_from_session(session, socket),
-         {:ok, urls_with_sources} <- get_sources_for_urls(urls),
-         {:ok, cards} <- process_urls(urls_with_sources) do
+         {:ok, scrapers} <- get_scrapers(urls),
+         {:ok, cards} <- scrape_cards(scrapers) do
       {:noreply, assign(socket, :cards, cards)}
     else
       {:error, err} when is_list(err) ->
@@ -107,35 +107,40 @@ defmodule TastingsWeb.PageLive do
   end
 
   @type source_pair :: {String.t(), Tastings.Sources}
+  @type card :: Tastings.Sources.card()
+  @type scraper :: (() -> Tastings.Sources.scrape_result())
 
   @spec get_source(String.t()) :: nil | source_pair
   defp get_source(url) do
     Enum.find(@sources, nil, fn {endpoint, _source} -> String.starts_with?(url, endpoint) end)
   end
 
-  @spec accumulate_sources(binary, [source_pair]) :: {:halt, String.t()} | {:cont, [source_pair]}
+  @spec accumulate_sources(binary, [source_pair]) :: {:halt, String.t()} | {:cont, [scraper]}
   defp accumulate_sources(url, acc) do
     case get_source(url) do
-      {endpoint, source} -> {:cont, acc ++ [{String.trim_leading(url, endpoint), source}]}
-      _ -> {:halt, {:error, "no supported source for #{url}"}}
+      {endpoint, source} ->
+        {:cont, [fn -> url |> String.trim_leading(endpoint) |> source.scrape_single() end | acc]}
+
+      _ ->
+        {:halt, {:error, "no supported source for #{url}"}}
     end
   end
 
-  @spec get_sources_for_urls([String.t()]) :: {:error, String.t()} | {:ok, [source_pair]}
-  defp get_sources_for_urls(urls) do
+  @spec get_scrapers([String.t()]) :: {:error, String.t()} | {:ok, [scraper()]}
+  defp get_scrapers(urls) do
     urls
     |> Stream.map(&String.trim/1)
     |> Enum.reduce_while([], &accumulate_sources/2)
     |> case do
       {:error, _reason} = err -> err
-      urls_with_sources -> {:ok, urls_with_sources}
+      scrapers -> {:ok, scrapers}
     end
   end
 
-  @spec process_urls([source_pair]) :: {:error, [String.t()]} | {:ok, [Tastings.Sources.card()]}
-  defp process_urls(urls_with_sources) do
-    urls_with_sources
-    |> Task.async_stream(fn {path, source} -> source.scrape_single(path) end)
+  @spec scrape_cards([scraper()]) :: {:error, [String.t()]} | {:ok, [Tastings.Sources.card()]}
+  defp scrape_cards(scrapers) do
+    scrapers
+    |> Task.async_stream(fn getter -> getter.() end)
     |> Stream.map(fn {:ok, res} -> res end)
     |> Enum.reduce({[], []}, &collect_scraped_cards/2)
     |> case do
@@ -144,11 +149,10 @@ defmodule TastingsWeb.PageLive do
     end
   end
 
-  @type card :: Tastings.Sources.card()
   @type cards_and_errs :: {[card()], [String.t()]}
 
   @spec collect_scraped_cards({:ok, [card()]} | {:error, String.t()}, cards_and_errs) ::
           cards_and_errs
-  defp collect_scraped_cards({:ok, card}, {cards, errs}), do: {cards ++ [card], errs}
-  defp collect_scraped_cards({:error, err}, {cards, errs}), do: {cards, errs ++ [err]}
+  defp collect_scraped_cards({:ok, card}, {cards, errs}), do: {[card | cards], errs}
+  defp collect_scraped_cards({:error, err}, {cards, errs}), do: {cards, [err | errs]}
 end

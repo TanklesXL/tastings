@@ -18,7 +18,9 @@ defmodule Tastings.Sources do
           notes: notes
         }
 
-  @callback scrape_single(String.t()) :: {:ok, card} | {:error, String.t()}
+  @type scrape_result :: {:ok, card} | {:error, String.t()}
+
+  @callback scrape_single(String.t()) :: scrape_result()
   @callback endpoint() :: String.t()
 end
 
