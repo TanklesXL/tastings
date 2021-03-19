@@ -137,10 +137,10 @@ defmodule TastingsWeb.PageLive do
     end
   end
 
-  @spec scrape_cards([scraper()]) :: {:error, [String.t()]} | {:ok, [Tastings.Sources.card()]}
+  @spec scrape_cards([scraper()]) :: {:error, [String.t()]} | {:ok, [card()]}
   defp scrape_cards(scrapers) do
     scrapers
-    |> Task.async_stream(fn getter -> getter.() end)
+    |> Task.async_stream(& &1.())
     |> Stream.map(fn {:ok, res} -> res end)
     |> Enum.reduce({[], []}, &collect_scraped_cards/2)
     |> case do
