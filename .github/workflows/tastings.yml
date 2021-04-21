@@ -34,6 +34,8 @@ jobs:
         run: gleam format --check src test
       - name: Compile Gleam
         run: gleam build
+      - name: Compile elixir
+        run: mix compile
       - name: Run elixir tests
         run: mix test
       - name: Run gleam tests
