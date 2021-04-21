@@ -46,7 +46,7 @@ defmodule Tastings.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:credo, "~> 1.5.4", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.5.4", only: [:dev], runtime: false},
       {:justify, "~> 1.1.0"},
       {:httpoison, "~> 1.8"},
       {:mix_gleam, "~> 0.1.0"},
