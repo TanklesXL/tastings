@@ -7,12 +7,11 @@ defmodule Tastings.MixProject do
       version: "0.1.0",
       elixir: "~> 1.11.3",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      compilers: [:phoenix, :gettext, :gleam] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
-      erlc_paths: ["src", "gen"],
-      compilers: [:gleam | Mix.compilers()]
+      erlc_paths: ["src", "gen"]
     ]
   end
 
