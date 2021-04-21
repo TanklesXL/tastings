@@ -24,7 +24,7 @@ config :logger, :console,
 config :phoenix, :json_library, Jason
 
 config :tastings,
-  sources: [Tastings.Sources.MasterOfMalt]
+  sources: [:sources@master_of_malt]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

@@ -2,33 +2,41 @@ name: Elixir CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
-
     name: Build and test
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Elixir
-      uses: erlef/setup-elixir@885971a72ed1f9240973bd92ab57af8c1aa68f24
-      with:
-        elixir-version: '1.11.3' # Define the elixir version [required]
-        otp-version: '23.2' # Define the OTP version [required]
-    - name: Restore dependencies cache
-      uses: actions/cache@v2
-      with:
-        path: deps
-        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
-        restore-keys: ${{ runner.os }}-mix-
-    - name: Install dependencies
-      run: mix deps.get
-    - name: Run tests
-      run: mix test
+      - uses: actions/checkout@v2
+      - name: Set up Erlang
+        uses: gleam-lang/setup-erlang@v1.1.2
+        with:
+          otp-version: 23.2
+      - uses: gleam-lang/setup-gleam@v1.0.2
+        with:
+          gleam-version: 0.14.4
+      - name: Set up Elixir
+        uses: erlef/setup-elixir@885971a72ed1f9240973bd92ab57af8c1aa68f24
+        with:
+          elixir-version: "1.11.3" # Define the elixir version [required]
+          otp-version: "23.2" # Define the OTP version [required]
+      - name: Restore dependencies cache
+        uses: actions/cache@v2
+        with:
+          path: deps
+          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-mix-
+      - name: Install dependencies
+        run: mix deps.get
+      - name: Run elixir tests
+        run: mix test
+      - name: Run gleam tests
+        run: mix eunit
 
   deploy:
     needs: build # Will only run if the test job succeeds
@@ -50,4 +58,4 @@ jobs:
           GIGALIXIR_PASSWORD: ${{ secrets.GIGALIXIR_PASSWORD }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           GIGALIXIR_APP: tastings # Feel free to also put this in your secrets
-          MIGRATIONS: false  # defaults to true
+          MIGRATIONS: false # defaults to true

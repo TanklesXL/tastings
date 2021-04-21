@@ -10,7 +10,9 @@ defmodule Tastings.MixProject do
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      erlc_paths: ["src", "gen"],
+      compilers: [:gleam | Mix.compilers()]
     ]
   end
 
@@ -35,7 +37,7 @@ defmodule Tastings.MixProject do
     [
       {:phoenix, "~> 1.5.7"},
       {:phoenix_live_view, "~> 0.15.4"},
-      {:floki, "~> 0.30.0"},
+      {:floki, "~> 0.30.1"},
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_dashboard, "~> 0.4"},
@@ -46,7 +48,11 @@ defmodule Tastings.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:credo, "~> 1.5.4", only: [:dev, :test], runtime: false},
       {:justify, "~> 1.1.0"},
-      {:httpoison, "~> 1.8"}
+      {:httpoison, "~> 1.8"},
+      {:mix_gleam, "~> 0.1.0"},
+      {:gleam_stdlib, "~> 0.14.0"},
+      {:gleam_httpc, "~> 1.0.1"},
+      {:mix_eunit, "~> 0.3.0"}
     ]
   end
 

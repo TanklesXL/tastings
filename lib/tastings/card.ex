@@ -3,8 +3,6 @@ defmodule Tastings.Card do
   The card details to be scraped from sites.
   """
 
-  import Tastings.Validation, only: [validate_string_keys: 3]
-
   @type t :: %__MODULE__{
           name: String.t(),
           brand: String.t(),
@@ -16,13 +14,13 @@ defmodule Tastings.Card do
   @enforce_keys [:name, :img, :desc, :brand, :notes]
   defstruct [:name, :img, :desc, :notes, :brand]
 
-  def validate(%__MODULE__{} = card) do
-    validate_string_keys(card, [:name, :img, :desc, :brand], "card")
-  end
-
-  defimpl String.Chars, for: __MODULE__ do
-    def to_string(card) do
-      "#{card.name}:\n\t#{card.desc}\nBrand: #{card.brand}\nImage:\t#{card.img}\n#{card.notes}"
-    end
+  def from_tuple({:card, name, brand, img, desc, notes}) do
+    %__MODULE__{
+      name: name,
+      brand: brand,
+      img: img,
+      desc: desc,
+      notes: Tastings.Notes.from_tuple(notes)
+    }
   end
 end

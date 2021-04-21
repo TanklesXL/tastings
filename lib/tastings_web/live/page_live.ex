@@ -140,7 +140,7 @@ defmodule TastingsWeb.PageLive do
     end
   end
 
-  @type card :: Tastings.Sources.card()
+  @type card :: :models.card()
 
   @spec scrape_cards([scraper()]) :: {:error, [String.t()]} | {:ok, [card()]}
   defp scrape_cards(scrapers) do
@@ -158,6 +158,9 @@ defmodule TastingsWeb.PageLive do
 
   @spec collect_scraped_cards({:ok, [card()]} | {:error, String.t()}, cards_and_errs) ::
           cards_and_errs
-  defp collect_scraped_cards({:ok, card}, {cards, errs}), do: {[card | cards], errs}
+  defp collect_scraped_cards({:ok, card}, {cards, errs}) do
+    {[Tastings.Card.from_tuple(card) | cards], errs}
+  end
+
   defp collect_scraped_cards({:error, err}, {cards, errs}), do: {cards, [err | errs]}
 end
