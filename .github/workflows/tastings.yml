@@ -33,9 +33,9 @@ jobs:
       - name: Install dependencies
         run: mix setup
       - name: Gleam tests
-        run: export MIX_ENV=test && mix eunit
+        run: mix eunit
       - name: Elixir tests
-        run: export MIX_ENV=test && mix test
+        run: mix test
   # deploy:
   #   needs: build # Will only run if the test job succeeds
   #   if: github.ref == 'refs/heads/main' # Only run this job if it is on the main branch
