@@ -66,7 +66,7 @@ defmodule Tastings.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get"],
+      setup: ["deps.get", "deps.compile"],
       "assets.deploy": ["esbuild default --minify", "phx.digest"]
     ]
   end
