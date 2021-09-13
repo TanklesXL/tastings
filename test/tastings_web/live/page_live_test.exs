@@ -10,9 +10,7 @@ defmodule TastingsWeb.PageLiveTest do
   defp scrape_btn(disabled \\ false) do
     disabled = if disabled, do: " disabled=\"disabled\"", else: ""
 
-    "<button class=\"url-submit-button\" phx-disable-with=\"Scraping...\" type=\"submit\"#{
-      disabled
-    }>Scrape</button>"
+    "<button class=\"url-submit-button\" phx-disable-with=\"Scraping...\" type=\"submit\"#{disabled}>Scrape</button>"
   end
 
   test "disconnected and connected render", %{conn: conn} do
