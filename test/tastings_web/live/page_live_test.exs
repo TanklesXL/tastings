@@ -7,11 +7,7 @@ defmodule TastingsWeb.PageLiveTest do
     "<input id=\"urls_url_#{id}\" name=\"urls[url_#{id}]\" placeholder=\"URL\" type=\"text\"/>"
   end
 
-  defp scrape_btn(disabled \\ false) do
-    disabled = if disabled, do: " disabled=\"disabled\"", else: ""
-
-    "<button class=\"url-submit-button\" phx-disable-with=\"Scraping...\" type=\"submit\"#{disabled}>Scrape</button>"
-  end
+  @scrape_btn "<button class=\"url-submit-button\" phx-disable-with=\"Scraping...\" type=\"submit\">Scrape</button>"
 
   test "disconnected and connected render", %{conn: conn} do
     {:ok, page_live, disconnected_html} = live(conn, "/")
@@ -20,7 +16,6 @@ defmodule TastingsWeb.PageLiveTest do
     connected_html = render(page_live)
     assert connected_html =~ "<h2>Select URLs to scrape</h2>"
     assert connected_html =~ input_field(1)
-    assert connected_html =~ scrape_btn(true)
   end
 
   test "clicking scrape with empty input fields shows an error", %{conn: conn} do
@@ -34,7 +29,6 @@ defmodule TastingsWeb.PageLiveTest do
     assert html =~ input_field(1)
     assert html =~ input_field(2)
     refute html =~ input_field(3)
-    assert html =~ scrape_btn(true)
   end
 
   test "inputing a valid url enables the scrape button", %{conn: conn} do
@@ -47,12 +41,12 @@ defmodule TastingsWeb.PageLiveTest do
         "urls[url_1]": "https://www.masterofmalt.com/whiskies/ardbeg/ardbeg-10-year-old-whisky/"
       })
 
-    assert html =~ scrape_btn()
+    assert html =~ @scrape_btn
   end
 
   defp assert_rendered_card(html, card) do
     assert html =~ "<h1>#{card.name}</h1>"
-    assert html =~ "<img src=\"#{card.img}\" class=\"whisky-thumbnail\"/>"
+    assert html =~ "<img class=\"whisky-thumbnail\" src=\"#{card.img}\"/>"
     assert html =~ "<h2 class=\"description-title\">Description</h2><p>#{card.desc}</p>"
     assert html =~ "<p style=\"float:right;\">Brand: #{card.brand}</p>"
 
@@ -106,12 +100,12 @@ defmodule TastingsWeb.PageLiveTest do
   def next_btn(:enabled), do: "<button phx-click=\"next\" class=\"nav-button\">Next »</button>"
 
   def next_btn(:disabled),
-    do: "<button phx-click=\"next\" disabled=\"disabled\" class=\"nav-button\">Next »</button>"
+    do: "<button disabled=\"disabled\" phx-click=\"next\" class=\"nav-button\">Next »</button>"
 
   def prev_btn(:enabled), do: "<button phx-click=\"prev\" class=\"nav-button\">« Prev</button>"
 
   def prev_btn(:disabled),
-    do: "<button phx-click=\"prev\" disabled=\"disabled\" class=\"nav-button\">« Prev</button>"
+    do: "<button disabled=\"disabled\" phx-click=\"prev\" class=\"nav-button\">« Prev</button>"
 
   test("when cards are added the card info and the gallery nav options are shown", %{conn: conn}) do
     {:ok, page_live, _disconnected_html} = live(conn, "/")
@@ -152,17 +146,14 @@ defmodule TastingsWeb.PageLiveTest do
     html = render(page_live)
     assert html =~ "<h2>Select URLs to scrape</h2>"
     assert html =~ input_field(1)
-    assert html =~ scrape_btn(true)
 
     send(page_live.pid, {:cards, [@ardbeg_card]})
     html = render(page_live)
     refute html =~ "<h2>Select URLs to scrape</h2>"
     refute html =~ input_field(1)
-    refute html =~ scrape_btn(true)
 
     html = render_click(page_live, :clear)
     assert html =~ "<h2>Select URLs to scrape</h2>"
     assert html =~ input_field(1)
-    assert html =~ scrape_btn(true)
   end
 end

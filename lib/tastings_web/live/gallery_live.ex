@@ -59,9 +59,9 @@ defmodule TastingsWeb.GalleryLive do
 
 
       <%= if length(@next) === 0 do %>
-       <button disabled phx-click="next" class="nav-button">&raquo; Next</button>
+       <button disabled phx-click="next" class="nav-button">Next &raquo;</button>
       <%else%>
-        <button phx-click="next" class="nav-button" >&raquo; Next</button>
+        <button phx-click="next" class="nav-button" >Next &raquo;</button>
       <% end %>
 
     <% end %>
