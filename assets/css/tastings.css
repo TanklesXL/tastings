@@ -1,0 +1,111 @@
+.tastings {
+    overflow: auto;
+}
+
+.clear-btn {
+    float: left;
+    background-color: transparent;
+    color: red;
+    border: 1px solid red;
+    transition-duration: 0.25s;
+}
+
+.clear-btn:hover {
+    background-color: red;
+    color: white;
+    border: 1px solid red;
+}
+
+.description-title {
+    text-decoration: underline;
+}
+
+.whisky-thumbnail {
+    max-width: 20em;
+    max-height: 30em;
+    float: right;
+    margin-left: 0.75em;
+}
+
+.notes-title {
+    text-align: left;
+    text-decoration: underline;
+}
+
+.notes-text {
+    text-align: left;
+}
+
+.title {
+    float: right;
+}
+
+.title-image {
+    height: 6em;
+}
+
+.add-row-button,
+.add-row-button:focus {
+    color: blue;
+    background-color: transparent;
+    border: 0 solid transparent;
+    float: left;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 5px;
+    transition-duration: 0.25s;
+}
+
+.add-row-button:hover {
+    background-color: transparent;
+    color: red;
+}
+
+.url-submit-button,
+.url-submit-button:focus {
+    background-color: #4CAF50;
+    width: 100%;
+    transition-duration: 0.2s;
+}
+
+.url-submit-button:hover {
+    background-color: #4CAF50;
+    box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.24);
+}
+
+.url-submit-button[disabled]:hover {
+    background-color: #4CAF50;
+    width: 100%;
+    box-shadow: none;
+}
+
+.nav-button,
+.nav-button:focus,
+.nav-button:active {
+    background-color: transparent;
+    color: blue;
+    transition-duration: 0.25s;
+    border: 1px solid blue;
+}
+
+.nav-button:hover {
+    background-color: transparent;
+    color: blue;
+    border: 1px solid navy;
+}
+
+.nav-button[disabled],
+.nav-button[disabled]:hover,
+.nav-button[disabled]:focus {
+    background-color: transparent;
+    color: navy;
+    transition-duration: 0.25s;
+    border: 1px solid navy;
+}
+
+.url-error-msg {
+    float: left;
+    font-size: 0.75em;
+    text-align: left;
+    text-justify: inter-word;
+}
