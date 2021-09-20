@@ -58,12 +58,13 @@ text(Tree) ->
 -spec find_text(list(floki:html_node()), binary()) -> {ok, binary()} |
     {error, binary()}.
 find_text(Html, Query) ->
-    case begin
+    Text = begin
         _pipe = Html,
         _pipe@1 = floki:find(_pipe, Query),
         _pipe@2 = text(_pipe@1),
         gleam@string:trim(_pipe@2)
-    end of
+    end,
+    case Text of
         <<""/utf8>> ->
             {error,
              gleam@string:concat([<<"No text found for query: "/utf8>>, Query])};
@@ -75,16 +76,16 @@ find_text(Html, Query) ->
 -spec attribute_from_meta(list(floki:html_node()), binary()) -> {ok, binary()} |
     {error, binary()}.
 attribute_from_meta(Html, Property) ->
-    _pipe = gleam@string:concat(
-        [<<"[property=\""/utf8>>, Property, <<"\"]"/utf8>>]
-    ),
-    _pipe@1 = floki:find(Html, _pipe),
-    _pipe@2 = floki:attribute(_pipe@1, <<"content"/utf8>>),
-    _pipe@3 = gleam@list:head(_pipe@2),
+    _pipe = [<<"[property=\""/utf8>>, Property, <<"\"]"/utf8>>],
+    _pipe@1 = gleam@string:concat(_pipe),
+    _pipe@2 = floki:find(Html, _pipe@1),
+    _pipe@3 = floki:attribute(_pipe@2, <<"content"/utf8>>),
+    _pipe@4 = gleam@list:head(_pipe@3),
     gleam@result:replace_error(
-        _pipe@3,
-        gleam@string:concat(
-            [<<"No data found for meta property: "/utf8>>, Property]
+        _pipe@4,
+        gleam@string:append(
+            <<"No data found for meta property: "/utf8>>,
+            Property
         )
     ).
 

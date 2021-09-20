@@ -53,10 +53,13 @@ fn text(tree: List(HTMLNode)) -> String {
 }
 
 fn find_text(html: List(HTMLNode), query: String) -> Result(String, String) {
-  case html
-  |> floki.find(query)
-  |> text()
-  |> string.trim() {
+  let text =
+    html
+    |> floki.find(query)
+    |> text()
+    |> string.trim()
+
+  case text {
     "" -> Error(string.concat(["No text found for query: ", query]))
     s -> Ok(s)
   }
@@ -66,14 +69,15 @@ fn attribute_from_meta(
   html: List(HTMLNode),
   property: String,
 ) -> Result(String, String) {
-  string.concat(["[property=\"", property, "\"]"])
+  ["[property=\"", property, "\"]"]
+  |> string.concat()
   |> floki.find(html, _)
   |> floki.attribute("content")
   |> list.head()
-  |> result.replace_error(string.concat([
+  |> result.replace_error(string.append(
     "No data found for meta property: ",
     property,
-  ]))
+  ))
 }
 
 const nose_selector = "#ContentPlaceHolder1_ctl00_ctl02_TastingNoteBox_ctl00_noseTastingNote"
@@ -106,7 +110,6 @@ const desc_meta = "og:description"
 
 pub fn new_card(html: List(HTMLNode)) -> Result(Card, String) {
   try name = attribute_from_meta(html, name_meta)
-
   try brand = attribute_from_meta(html, brand_meta)
   try img = attribute_from_meta(html, img_meta)
   try desc = attribute_from_meta(html, desc_meta)
