@@ -1,0 +1,57 @@
+name: Tastings CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: Build and test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Gleam
+        uses: gleam-lang/setup-gleam@v1.0.2
+        with:
+          gleam-version: 0.17.0-rc1
+      - name: Set up Elixir
+        uses: erlef/setup-elixir@885971a72ed1f9240973bd92ab57af8c1aa68f24
+        with:
+          elixir-version: "1.12.3" # Define the elixir version [required]
+          otp-version: "24.0.6" # Define the OTP version [required]
+      - name: Restore dependencies cache
+        uses: actions/cache@v2
+        with:
+          path: deps
+          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-mix-
+      - name: Format Gleam
+        run: gleam format --check src test
+      - name: Install dependencies
+        run: mix setup
+      - name: Gleam tests
+        run: mix eunit
+      - name: Elixir tests
+        run: mix test
+  # deploy:
+  #   needs: build # Will only run if the test job succeeds
+  #   if: github.ref == 'refs/heads/main' # Only run this job if it is on the main branch
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         ref: main # Check out main instead of the latest commit
+  #         fetch-depth: 0 # Checkout the whole branch
+  #     - uses: actions/setup-python@v2
+  #       with:
+  #         python-version: 3.8.1
+  #     - uses: mhanberg/gigalixir-action@v0.6.1
+  #       with:
+  #         GIGALIXIR_USERNAME: ${{ secrets.GIGALIXIR_USERNAME }}
+  #         GIGALIXIR_PASSWORD: ${{ secrets.GIGALIXIR_PASSWORD }}
+  #         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+  #         GIGALIXIR_APP: tastings # Feel free to also put this in your secrets
+  #         MIGRATIONS: false # defaults to true
