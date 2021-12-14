@@ -84,13 +84,13 @@ fn attribute_from_meta(
   ))
 }
 
-const nose_selector = "#ContentPlaceHolder1_ctl00_ctl02_TastingNoteBox_ctl00_noseTastingNote"
+const nose_selector = "#ContentPlaceHolder1_ctl00_ctl03_TastingNoteBox_ctl00_noseTastingNote"
 
-const palate_selector = "#ContentPlaceHolder1_ctl00_ctl02_TastingNoteBox_ctl00_palateTastingNote"
+const palate_selector = "#ContentPlaceHolder1_ctl00_ctl03_TastingNoteBox_ctl00_palateTastingNote"
 
-const finish_selector = "#ContentPlaceHolder1_ctl00_ctl02_TastingNoteBox_ctl00_finishTastingNote"
+const finish_selector = "#ContentPlaceHolder1_ctl00_ctl03_TastingNoteBox_ctl00_finishTastingNote"
 
-const overall_selector = "#ContentPlaceHolder1_ctl00_ctl02_TastingNoteBox_ctl00_overallTastingNote"
+const overall_selector = "#ContentPlaceHolder1_ctl00_ctl03_TastingNoteBox_ctl00_overallTastingNote"
 
 pub fn new_notes(html: List(HTMLNode)) -> Result(Notes, String) {
   try nose = find_text(html, nose_selector)

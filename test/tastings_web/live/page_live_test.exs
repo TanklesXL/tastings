@@ -46,7 +46,7 @@ defmodule TastingsWeb.PageLiveTest do
 
   defp assert_rendered_card(html, card) do
     assert html =~ "<h1>#{card.name}</h1>"
-    assert html =~ "<img class=\"whisky-thumbnail\" src=\"#{card.img}\"/>"
+    assert html =~ "<img src=\"#{card.img}\" class=\"whisky-thumbnail\"/>"
     assert html =~ "<h2 class=\"description-title\">Description</h2><p>#{card.desc}</p>"
     assert html =~ "<p style=\"float:right;\">Brand: #{card.brand}</p>"
 

@@ -40,22 +40,22 @@ fn html_metas() -> String {
 }
 
 const nose = #(
-  "ContentPlaceHolder1_ctl00_ctl02_TastingNoteBox_ctl00_noseTastingNote",
+  "ContentPlaceHolder1_ctl00_ctl03_TastingNoteBox_ctl00_noseTastingNote",
   "A ridge of vanilla leads to mountain of peat capped with citrus fruits and circled by clouds of sea spray.",
 )
 
 const palate = #(
-  "ContentPlaceHolder1_ctl00_ctl02_TastingNoteBox_ctl00_palateTastingNote",
+  "ContentPlaceHolder1_ctl00_ctl03_TastingNoteBox_ctl00_palateTastingNote",
   "Sweet vanilla counterbalanced with lemon and lime followed by that surging Ardbeg smoke that we all know and love.",
 )
 
 const finish = #(
-  "ContentPlaceHolder1_ctl00_ctl02_TastingNoteBox_ctl00_finishTastingNote",
+  "ContentPlaceHolder1_ctl00_ctl03_TastingNoteBox_ctl00_finishTastingNote",
   "Long and glorious; sea salted caramel and beach bonfire smoke.",
 )
 
 const overall = #(
-  "ContentPlaceHolder1_ctl00_ctl02_TastingNoteBox_ctl00_overallTastingNote",
+  "ContentPlaceHolder1_ctl00_ctl03_TastingNoteBox_ctl00_overallTastingNote",
   "Precise balance, big smoke and non-chill filtered. This is why this is such a famous dram.",
 )
 

@@ -87,19 +87,19 @@ attribute_from_meta(Html, Property) ->
 new_notes(Html) ->
     case find_text(
         Html,
-        <<"#ContentPlaceHolder1_ctl00_ctl02_TastingNoteBox_ctl00_noseTastingNote"/utf8>>
+        <<"#ContentPlaceHolder1_ctl00_ctl03_TastingNoteBox_ctl00_noseTastingNote"/utf8>>
     ) of
         {error, _try} -> {error, _try};
         {ok, Nose} ->
             case find_text(
                 Html,
-                <<"#ContentPlaceHolder1_ctl00_ctl02_TastingNoteBox_ctl00_palateTastingNote"/utf8>>
+                <<"#ContentPlaceHolder1_ctl00_ctl03_TastingNoteBox_ctl00_palateTastingNote"/utf8>>
             ) of
                 {error, _try@1} -> {error, _try@1};
                 {ok, Palate} ->
                     case find_text(
                         Html,
-                        <<"#ContentPlaceHolder1_ctl00_ctl02_TastingNoteBox_ctl00_finishTastingNote"/utf8>>
+                        <<"#ContentPlaceHolder1_ctl00_ctl03_TastingNoteBox_ctl00_finishTastingNote"/utf8>>
                     ) of
                         {error, _try@2} -> {error, _try@2};
                         {ok, Finish} ->
@@ -107,7 +107,7 @@ new_notes(Html) ->
                                 _pipe = Html,
                                 _pipe@1 = find_text(
                                     _pipe,
-                                    <<"#ContentPlaceHolder1_ctl00_ctl02_TastingNoteBox_ctl00_overallTastingNote"/utf8>>
+                                    <<"#ContentPlaceHolder1_ctl00_ctl03_TastingNoteBox_ctl00_overallTastingNote"/utf8>>
                                 ),
                                 gleam@result:unwrap(_pipe@1, <<""/utf8>>)
                             end,
