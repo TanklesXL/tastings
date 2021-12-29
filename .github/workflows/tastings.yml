@@ -16,7 +16,7 @@ jobs:
       - name: Set up Gleam
         uses: gleam-lang/setup-gleam@v1.0.2
         with:
-          gleam-version: 0.17.0-rc1
+          gleam-version: 0.18.2
       - name: Set up Elixir
         uses: erlef/setup-elixir@885971a72ed1f9240973bd92ab57af8c1aa68f24
         with:
@@ -28,12 +28,14 @@ jobs:
           path: deps
           key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
           restore-keys: ${{ runner.os }}-mix-
+      - name: archive install mix_gleam
+        run: mix archive.install hex mix_gleam
       - name: Format Gleam
         run: gleam format --check src test
       - name: Install dependencies
         run: mix setup
       - name: Gleam tests
-        run: mix eunit
+        run: mix gleam.test
       - name: Elixir tests
         run: mix test
   # deploy:
