@@ -13,24 +13,29 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Set up gleam, elixir, erlang
-        uses: erlef/setup-beam@v1
-        with:
-          gleam-version: "0.18.2"
-          otp-version: "24.0.6"
-          elixir-version: "1.12.3"
+      - name: asdf setup
+        uses: asdf-vm/actions/setup@v1
+      - name: asdf all the things
+        run: |
+          asdf plugin-add erlang https://github.com/michallepicki/asdf-erlang-prebuilt-ubuntu-20.04.git
+          asdf plugin-add gleam
+          asdf plugin-add elixir
+          asdf install
+      - name: install mix_gleam
+        run: |
+          git clone https://github.com/gleam-lang/mix_gleam.git
+          cd mix_gleam
+          MIX_ENV=prod mix do local.hex --force, local.rebar -force, archive.build, archive.install --force
+      - run: mix deps.get
       - name: Restore dependencies cache
         uses: actions/cache@v2
         with:
           path: deps
           key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
           restore-keys: ${{ runner.os }}-mix-
-      - name: archive install mix_gleam
-        run: mix archive.install hex mix_gleam
       - name: Format Gleam
         run: gleam format --check src test
-      - name: Install dependencies
-        run: mix setup
+      - run: mix compile
       - name: Gleam tests
         run: mix gleam.test
       - name: Elixir tests
