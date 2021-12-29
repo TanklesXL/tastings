@@ -1,6 +1,6 @@
 import helpers
 import floki
-import gleam/should
+import gleeunit/should
 import gleam/string_builder
 import sources/master_of_malt
 

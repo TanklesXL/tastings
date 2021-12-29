@@ -1,17 +1,21 @@
 defmodule Tastings.MixProject do
   use Mix.Project
 
+  @app :tastings
+
   def project do
     [
-      app: :tastings,
+      app: @app,
       version: "0.1.0",
       elixir: "~> 1.12",
+      archives: [mix_gleam: "~> 0.3.0"],
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:gleam, :gettext] ++ Mix.compilers(),
+      compilers: [:gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
-      aliases: aliases(),
       deps: deps(),
-      erlc_paths: ["src", "gen"]
+      aliases: aliases() ++ MixGleam.add_aliases(),
+      erlc_paths: ["build/dev/erlang/#{@app}/build"],
+      erlc_include_path: "build/dev/erlang/#{@app}/include"
     ]
   end
 
@@ -47,13 +51,11 @@ defmodule Tastings.MixProject do
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:mix_gleam, "~> 0.1.0"},
-      {:gleam_stdlib, "~> 0.17.1"},
-      {:gleam_httpc, "~> 1.0.2"},
-      {:gleam_http, "~> 2.0.2"},
-      {:mix_eunit, "~> 0.3.0", runtime: false},
-      {:justify, "~> 1.1.0"},
-      {:gleam_should_assertions, "~> 0.1.0"}
+      {:gleam_stdlib, "~> 0.18"},
+      {:gleam_httpc, "~> 1.1.0"},
+      {:gleam_http, "~> 2.1.0"},
+      {:gleeunit, "~> 0.5", only: [:dev, :test], runtime: false},
+      {:justify, "~> 1.1.0"}
     ]
   end
 
@@ -64,9 +66,6 @@ defmodule Tastings.MixProject do
   #
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
-    [
-      setup: ["deps.get", "deps.compile"],
-      "assets.deploy": ["esbuild default --minify", "phx.digest"]
-    ]
+    [setup: ["deps.get", "compile"], "assets.deploy": ["esbuild default --minify", "phx.digest"]]
   end
 end

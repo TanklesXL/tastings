@@ -3,7 +3,7 @@ import gleam/list
 import gleam/int
 import gleam/result
 import gleam/string
-import gleam/dynamic.{Dynamic}
+import gleam/dynamic
 import floki.{HTMLNode}
 import models.{Card, Notes}
 import gleam/httpc
@@ -38,22 +38,8 @@ pub fn scrape_single(path: String) -> Result(Card, String) {
   }
 }
 
-type FlokiTextOption {
-  Deep
-  Js
-  Style
-  Sep
-}
-
-// shadow floki.text with this so we can pass #(:deep, false)
-external fn floki_text(
-  tree: List(HTMLNode),
-  List(#(FlokiTextOption, Dynamic)),
-) -> String =
-  "Elixir.Floki" "text"
-
 fn text(tree: List(HTMLNode)) -> String {
-  floki_text(tree, [#(Deep, dynamic.from(False))])
+  floki.text_with_opts(tree, [#(floki.Deep, dynamic.from(False))])
 }
 
 fn find_text(html: List(HTMLNode), query: String) -> Result(String, String) {
@@ -77,20 +63,20 @@ fn attribute_from_meta(
   |> string.concat()
   |> floki.find(html, _)
   |> floki.attribute("content")
-  |> list.head()
+  |> list.first()
   |> result.replace_error(string.append(
     "No data found for meta property: ",
     property,
   ))
 }
 
-const nose_selector = "#ContentPlaceHolder1_ctl00_ctl03_TastingNoteBox_ctl00_noseTastingNote"
+const nose_selector = "#ContentPlaceHolder1_ctl00_ctl02_TastingNoteBox_ctl00_noseTastingNote"
 
-const palate_selector = "#ContentPlaceHolder1_ctl00_ctl03_TastingNoteBox_ctl00_palateTastingNote"
+const palate_selector = "#ContentPlaceHolder1_ctl00_ctl02_TastingNoteBox_ctl00_palateTastingNote"
 
-const finish_selector = "#ContentPlaceHolder1_ctl00_ctl03_TastingNoteBox_ctl00_finishTastingNote"
+const finish_selector = "#ContentPlaceHolder1_ctl00_ctl02_TastingNoteBox_ctl00_finishTastingNote"
 
-const overall_selector = "#ContentPlaceHolder1_ctl00_ctl03_TastingNoteBox_ctl00_overallTastingNote"
+const overall_selector = "#ContentPlaceHolder1_ctl00_ctl02_TastingNoteBox_ctl00_overallTastingNote"
 
 pub fn new_notes(html: List(HTMLNode)) -> Result(Notes, String) {
   try nose = find_text(html, nose_selector)
