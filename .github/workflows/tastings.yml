@@ -13,15 +13,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Gleam
-        uses: gleam-lang/setup-gleam@v1.0.2
+      - name: Set up gleam, elixir, erlang
+        uses: erlef/setup-beam@v1
         with:
-          gleam-version: 0.18.2
-      - name: Set up Elixir
-        uses: erlef/setup-elixir@885971a72ed1f9240973bd92ab57af8c1aa68f24
-        with:
-          elixir-version: "1.12.3" # Define the elixir version [required]
-          otp-version: "24.0.6" # Define the OTP version [required]
+          gleam-version: "0.18.2"
+          otp-velsion: "24.0.6"
+          elixir-version: "1.12.3"
       - name: Restore dependencies cache
         uses: actions/cache@v2
         with:
