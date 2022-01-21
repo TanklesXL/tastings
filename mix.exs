@@ -8,7 +8,7 @@ defmodule Tastings.MixProject do
       app: @app,
       version: "0.1.0",
       elixir: "~> 1.13",
-      archives: [mix_gleam: "~> 0.3.0"],
+      archives: [mix_gleam: "~> 0.4.0"],
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
@@ -51,11 +51,12 @@ defmodule Tastings.MixProject do
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:gleam_stdlib, "~> 0.18"},
-      {:gleam_httpc, "~> 1.1.0"},
-      {:gleam_http, "~> 2.1.0"},
+      {:gleam_stdlib, "~> 0.19"},
+      {:gleam_httpc, "~> 1.1"},
+      {:gleam_http, "~> 2.1"},
       {:gleeunit, "~> 0.5", only: [:dev, :test], runtime: false},
-      {:justify, "~> 1.1.0"}
+      {:justify, "~> 1.1.0"},
+      {:gleam_erlang, "~> 0.8", override: true}
     ]
   end
 

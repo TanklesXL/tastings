@@ -2,44 +2,40 @@ name: Tastings CI
 
 on:
   push:
-    branches: [main]
+    branches:
+      - "main"
+      - "v*.*.*"
   pull_request:
-    branches: [main]
 
 jobs:
-  build:
-    name: Build and test
+  test:
     runs-on: ubuntu-latest
-
+    env:
+      MIX_ENV: test
     steps:
       - uses: actions/checkout@v2
-      - name: asdf setup
-        uses: asdf-vm/actions/setup@v1
-      - name: asdf all the things
-        run: |
-          asdf plugin-add erlang https://github.com/michallepicki/asdf-erlang-prebuilt-ubuntu-20.04.git
-          asdf plugin-add gleam
-          asdf plugin-add elixir
-          asdf install
-      - name: install mix_gleam
-        run: |
-          git clone https://github.com/gleam-lang/mix_gleam.git
-          cd mix_gleam
-          MIX_ENV=prod mix do local.hex --force, local.rebar --force, archive.build, archive.install --force
+
+      - run: mv mix.exs mix.exs.ignore
+
+      - uses: erlef/setup-beam@v1
+        with:
+          otp-version: "24.2"
+          elixir-version: "1.13.1"
+          gleam-version: "0.19.0"
+
+      - run: mix archive.install hex mix_gleam --force
+      - run: mv mix.exs.ignore mix.exs
       - run: mix deps.get
-      - name: Restore dependencies cache
-        uses: actions/cache@v2
+      - uses: actions/cache@v2
         with:
           path: deps
           key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
           restore-keys: ${{ runner.os }}-mix-
-      - name: Format Gleam
-        run: gleam format --check src test
-      - run: mix compile
-      - name: Gleam tests
-        run: mix gleam.test
-      - name: Elixir tests
-        run: mix test
+
+      - run: gleam format --check src test
+      - run: mix gleam.test
+      - run: mix test
+
   # deploy:
   #   needs: build # Will only run if the test job succeeds
   #   if: github.ref == 'refs/heads/main' # Only run this job if it is on the main branch
