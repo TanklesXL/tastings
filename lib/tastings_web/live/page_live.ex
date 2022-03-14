@@ -123,9 +123,9 @@ defmodule TastingsWeb.PageLive do
     end
   end
 
-  @type card :: :models.card()
+  @type card_in :: :models.card()
 
-  @spec scrape_cards([Sources.scraper()]) :: {:error, [String.t()]} | {:ok, [card()]}
+  @spec scrape_cards([Sources.scraper()]) :: {:error, [String.t()]} | {:ok, [Tastings.Card.t()]}
   defp scrape_cards(scrapers) do
     scrapers
     |> Task.async_stream(& &1.())
@@ -137,9 +137,9 @@ defmodule TastingsWeb.PageLive do
     end
   end
 
-  @type cards_and_errs :: {[card()], [String.t()]}
+  @type cards_and_errs :: {[Tastings.Card.t()], [String.t()]}
 
-  @spec collect_scraped_cards({:ok, [card()]} | {:error, String.t()}, cards_and_errs) ::
+  @spec collect_scraped_cards({:ok, [card_in()]} | {:error, String.t()}, cards_and_errs) ::
           cards_and_errs
   defp collect_scraped_cards({:ok, card}, {cards, errs}) do
     {[Tastings.Card.from_tuple(card) | cards], errs}

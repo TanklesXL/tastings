@@ -39,7 +39,7 @@ pub fn scrape_single(path: String) -> Result(Card, String) {
 }
 
 fn text(tree: List(HTMLNode)) -> String {
-  floki.text_with_opts(tree, [#(floki.Deep, dynamic.from(False))])
+  floki.text_with_opts(tree, [floki.Deep(False)])
 }
 
 fn find_text(html: List(HTMLNode), query: String) -> Result(String, String) {

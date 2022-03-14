@@ -1,5 +1,3 @@
-import gleam/dynamic.{Dynamic}
-
 pub external type HTMLNode
 
 pub external fn parse_document(raw: String) -> Result(List(HTMLNode), String) =
@@ -12,15 +10,15 @@ pub external fn attribute(tree: List(HTMLNode), name: String) -> List(String) =
   "Elixir.Floki" "attribute"
 
 pub type FlokiTextOption {
-  Deep
-  Js
-  Style
-  Sep
+  Deep(Bool)
+  Js(Bool)
+  Style(Bool)
+  Sep(String)
 }
 
 // shadow floki.text with this so we can pass #(:deep, false)
 pub external fn text_with_opts(
   tree: List(HTMLNode),
-  List(#(FlokiTextOption, Dynamic)),
+  List(FlokiTextOption),
 ) -> String =
   "Elixir.Floki" "text"
