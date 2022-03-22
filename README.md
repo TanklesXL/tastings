@@ -11,9 +11,22 @@ A simple spirits tasting aide built with elixir, phoenix and gleam:
   width="50em"
 />
 <img
-  src="https://github.com/gleam-lang/website/blob/main/images/lucy-pink.svg"
+  src="https://raw.githubusercontent.com/gleam-lang/website/main/images/lucy-pink-2.svg"
   width="50em"
 />
+## Example Usage
+
+<img src="https://raw.githubusercontent.com/TanklesXL/tastings/main/assets/static/images/tastings.png"
+width="300em"/>
+
+<img src="https://raw.githubusercontent.com/TanklesXL/tastings/main/assets/static/images/tastings_input.png"
+width="300em"/>
+
+<img src="https://raw.githubusercontent.com/TanklesXL/tastings/main/assets/static/images/tastings_ardbeg.png"
+width="300em"/>
+
+<img src="https://raw.githubusercontent.com/TanklesXL/tastings/main/assets/static/images/tastings_arran.png"
+width="300em"/>
 
 To start your Phoenix server:
 

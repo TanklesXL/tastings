@@ -54,7 +54,7 @@ defmodule Tastings.MixProject do
       {:gleam_stdlib, "~> 0.19"},
       {:gleam_httpc, "~> 1.1"},
       {:gleam_http, "~> 2.1"},
-      {:gleeunit, "~> 0.5", only: [:dev, :test], runtime: false},
+      {:gleeunit, "~> 0.6", runtime: false},
       {:justify, "~> 1.1.0"},
       {:gleam_erlang, "~> 0.8", override: true}
     ]
