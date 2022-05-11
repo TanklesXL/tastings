@@ -1,9 +1,7 @@
-import gleam/map
 import gleam/list
 import gleam/int
 import gleam/result
 import gleam/string
-import gleam/dynamic
 import floki.{HTMLNode}
 import models.{Card, Notes}
 import gleam/httpc

@@ -13,7 +13,7 @@ defmodule Tastings.MixProject do
       compilers: [:gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      aliases: aliases() ++ MixGleam.add_aliases(),
+      aliases: aliases() |> MixGleam.add_aliases(),
       erlc_paths: ["build/dev/erlang/#{@app}/build"],
       erlc_include_path: "build/dev/erlang/#{@app}/include"
     ]
@@ -51,12 +51,13 @@ defmodule Tastings.MixProject do
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:gleam_stdlib, "~> 0.19"},
+      {:gleam_stdlib, "~> 0.21"},
       {:gleam_httpc, "~> 1.1"},
       {:gleam_http, "~> 2.1"},
       {:gleeunit, "~> 0.6", runtime: false},
       {:justify, "~> 1.1.0"},
       {:gleam_erlang, "~> 0.8", override: true}
+      # {:mix_gleam, "~> 0.4"}
     ]
   end
 

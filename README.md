@@ -14,6 +14,7 @@ A simple spirits tasting aide built with elixir, phoenix and gleam:
   src="https://raw.githubusercontent.com/gleam-lang/website/main/images/lucy-pink-2.svg"
   width="50em"
 />
+
 ## Example Usage
 
 <img src="https://raw.githubusercontent.com/TanklesXL/tastings/main/assets/static/images/tastings.png"

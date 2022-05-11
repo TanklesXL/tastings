@@ -30,3 +30,5 @@ npm-debug.log
 /assets/node_modules/
 
 /build/
+
+/priv/cert/

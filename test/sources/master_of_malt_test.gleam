@@ -1,7 +1,6 @@
 import helpers
 import floki
 import gleeunit/should
-import gleam/string_builder
 import sources/master_of_malt
 
 pub fn build_card_test() {

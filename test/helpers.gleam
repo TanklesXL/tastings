@@ -1,7 +1,4 @@
-import gleeunit/should
 import gleam/string
-import gleam/string_builder
-import floki
 import models.{Card, Notes}
 
 const brand = #("brand", "Ardbeg")

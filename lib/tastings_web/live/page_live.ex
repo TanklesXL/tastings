@@ -35,6 +35,14 @@ defmodule TastingsWeb.PageLive do
     }
   end
 
+  @impl true
+  def handle_event("remove_row", _session, socket) do
+    {
+      :noreply,
+      update(socket, :num_inputs, &(&1 - 1))
+    }
+  end
+
   def handle_event("submit", session, socket) do
     with {:ok, urls} <- fetch_urls_from_session(session, socket),
          {:ok, scrapers} <- get_scrapers(urls),
@@ -155,6 +163,9 @@ defmodule TastingsWeb.PageLive do
         <div>
             <h2>Select URLs to scrape</h2>
             <button type="button" phx-click="add_row" class="add-row-button">Add row</button>
+            <%= if @num_inputs > 1 do %>
+              <button style="float:right" type="button" phx-click="remove_row" class="add-row-button">Remove row</button>
+            <% end %>
             <form phx-submit="submit" phx-change="input">
                 <%= for i <- 1..@num_inputs do %>
                 <%= text_input @urls, :"url_#{i}", [placeholder: "URL"] %>
