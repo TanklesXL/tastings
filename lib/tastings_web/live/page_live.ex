@@ -47,7 +47,7 @@ defmodule TastingsWeb.PageLive do
     with {:ok, urls} <- fetch_urls_from_session(session, socket),
          {:ok, scrapers} <- get_scrapers(urls),
          {:ok, cards} <- scrape_cards(scrapers) do
-      {:noreply, assign(socket, :cards, cards)}
+      {:noreply, socket |> clear_flash() |> assign(:cards, cards)}
     else
       {:error, err} when is_list(err) ->
         {:noreply, put_flash(socket, :error, Enum.join(err, ", "))}
@@ -158,14 +158,26 @@ defmodule TastingsWeb.PageLive do
   @impl true
   def render(assigns) do
     ~H"""
+    <%= if Enum.empty?(@cards) do %>
+    <b>
+      <i>Note:</i>
+      Tastings currently supports URLs for product pages from <a href="masterofmalt.com">Master of Malt</a>,
+      <br/>
+      for example:
+    </b>
+    <a href="https://www.masterofmalt.com/whiskies/arran/arran-10-year-old-whisky">
+      https://www.masterofmalt.com/whiskies/arran/arran-10-year-old-whisky
+    </a>
+
     <section class="phx-hero tastings">
-        <%= if Enum.empty?(@cards) do %>
         <div>
-            <h2>Select URLs to scrape</h2>
-            <button type="button" phx-click="add_row" class="add-row-button">Add row</button>
+            <h2>Enter URLs to scrape</h2>
             <%= if @num_inputs > 1 do %>
-              <button style="float:right" type="button" phx-click="remove_row" class="add-row-button">Remove row</button>
+              <button style="float:left" type="button" phx-click="remove_row" class="add-row-button">Remove row</button>
             <% end %>
+
+            <button style="float:right" type="button" phx-click="add_row" class="add-row-button">Add row</button>
+
             <form phx-submit="submit" phx-change="input">
                 <%= for i <- 1..@num_inputs do %>
                 <%= text_input @urls, :"url_#{i}", [placeholder: "URL"] %>
@@ -176,11 +188,14 @@ defmodule TastingsWeb.PageLive do
                 <%= submit  "Scrape", [phx_disable_with: "Scraping...", class: "url-submit-button", disabled: @disable_scrape] %>
             </form>
         </div>
+        </section>
+
         <% else %>
-        <%= live_render @socket, GalleryLive, id: "gallery", session: %{"cards" => @cards} %>
-        <button phx-click="clear" class="clear-btn">Clear</button>
+          <section class="phx-hero tastings">
+            <%= live_render @socket, GalleryLive, id: "gallery", session: %{"cards" => @cards} %>
+            <button phx-click="clear" class="clear-btn">Clear</button>
+          </section>
         <% end %>
-    </section>
     """
   end
 end
