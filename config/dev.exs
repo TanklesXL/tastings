@@ -13,6 +13,7 @@ config :tastings, TastingsWeb.Endpoint,
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
+  secret_key_base: "TsyFzn1KzzJS2JQAExMOlPsjj4ny1QqG6yz1934RamYOl5BFXybv+Xofz3Nhhk6M",
   watchers: [
     # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}

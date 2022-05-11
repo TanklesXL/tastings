@@ -10,7 +10,6 @@ import Config
 # Configures the endpoint
 config :tastings, TastingsWeb.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "TsyFzn1KzzJS2JQAExMOlPsjj4ny1QqG6yz1934RamYOl5BFXybv+Xofz3Nhhk6M",
   render_errors: [view: TastingsWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: Tastings.PubSub,
   live_view: [signing_salt: "bNOjUa2K"]
